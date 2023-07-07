@@ -1,35 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Web site created using create-react-app" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <link rel="icon" href="https://themes.pixelstrap.com/sheltos/assets/images/favicon.png" type="image/x-icon" />
+  <!--Google font-->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,500,500i,600,600i,700,700i,800,800i"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i&amp;display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Rubik:400,400i,500,500i,700,700i" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/ca8d017dcc.js" crossorigin="anonymous"></script>
+  <!-- animate css -->
+  <link rel="stylesheet" type="text/css" href="https://themes.pixelstrap.com/sheltos/assets/css/animate.css">
+
+  <!-- Template css -->
+  <link rel="stylesheet" type="text/css" href="https://themes.pixelstrap.com/sheltos/assets/css/admin.css">
+  <!-- magnific css -->
+  <link rel="stylesheet" type="text/css" href="https://themes.pixelstrap.com/sheltos/assets/css/magnific-popup.css">
+
+  <!-- range slider css -->
+  <link rel="stylesheet" type="text/css" href="https://themes.pixelstrap.com/sheltos/assets/css/jquery-ui.css">
+
+  <!-- Template css -->
+  <link rel="stylesheet" type="text/css" href="https://themes.pixelstrap.com/sheltos/assets/css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="https://themes.pixelstrap.com/sheltos/assets/css/color1.css">
+
+
+
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  
+  <!-- latest jquery-->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/jquery-3.6.0.min.js"></script>
+
+  <!-- popper js-->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/popper.min.js"></script>
+
+  <!-- magnific js -->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/jquery.magnific-popup.js"></script>
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/zoom-gallery.js"></script>
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/zoom-gallery-multiple.js"></script>
+
+  <!-- video js-->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/jquery.vide.min.js"></script>
+
+  <!-- range slider js -->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/jquery-ui.js"></script>
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/jquery.ui.touch-punch.min.js"></script>
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/range-slider.js"></script>
+
+
+  <!-- Bootstrap js-->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/bootstrap.bundle.min.js"></script>
+
+  <!-- feather icon js-->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/feather-icon/feather.min.js"></script>
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/feather-icon/feather-icon.js"></script>
+
+  <!-- Dropzone js -->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/dropzone/dropzone.js"></script>
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/dropzone/dropzone-script.js"></script>
+
+  <!-- Color-picker js-->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/color/custom-colorpicker.js"></script>
+
+  <!-- sidebar js -->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/sidebar.js"></script>
+
+  <!-- print js -->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/print.js"></script>
+
+  <!-- Template js-->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/script.js"></script>
+
+  <!--admin js -->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/admin-script.js"></script>
+
+  <!-- Customizer js-->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/customizer.js"></script>
+
+  <!-- sidebar js -->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/sidebar.js"></script>
+
+  <!-- slick js -->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/slick.js"></script>
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/slick-animation.min.js"></script>
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/custom-slick.js"></script>
+
+  <!-- Color-picker js-->
+  <script src="https://themes.pixelstrap.com/sheltos/assets/js/color/single-property2.js"></script>
+
+
+
+
+  <title>Crowdpe Admin Panel</title>
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  
+  <div id="root"></div>
+  <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
 
@@ -39,5 +115,6 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-  </body>
+</body>
+
 </html>

@@ -1,24 +1,21 @@
-import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import AdminPanel from "./Components/AdminPanel"
+import PropertyList from './Components/PropertyList';
+import EditProperty from './Components/EditProperty';
+import PropertyDetails from './Components/PropertyDetails';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/admin-panel" element={<AdminPanel />} />
+        <Route path="/" element={<AdminPanel />} />
+        <Route path="/property-list" element={<PropertyList />} />
+        <Route path="/edit-property" element={<EditProperty />} />
+        <Route path="/property-details" element={<PropertyDetails />} />
+      </Routes>
+    </Router>
   );
 }
 
