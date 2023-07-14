@@ -6,8 +6,6 @@ import { User, Lock } from "react-feather";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDoc, doc } from "firebase/firestore";
 
-
-
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,18 +20,19 @@ const Login = () => {
         const docref = doc(db, "users", userCredential.user.uid);
         getDoc(docref)
           .then((doc) => {
-            console.log(doc)
+            console.log(doc);
             if (doc.exists) {
               if (doc.data().isAdmin === "true") {
-                navigate("/admin-panel")
-                console.log("signed in")
+                navigate("/admin-panel");
+                console.log("signed in");
               } else {
                 logOut();
               }
-            };
-          }).catch((error) => {
-            console.log(error)
+            }
           })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((err) => {
         if (err.code === "auth/wrong-password") {
@@ -46,7 +45,6 @@ const Login = () => {
           setErr(err.message);
         }
       });
-
   };
 
   // useEffect(() => {
@@ -72,7 +70,6 @@ const Login = () => {
     navigate("/login");
   };
 
-
   return (
     <div>
       <section className="breadcrumb-section p-0">
@@ -89,7 +86,7 @@ const Login = () => {
               <nav aria-label="breadcrumb" className="theme-breadcrumb">
                 <ol className="breadcrumb">
                   <li className="breadcrumb-item">
-                    <a href="index.html">Home</a>
+                    <a href="/property-list">Home</a>
                   </li>
                   <li className="breadcrumb-item active" aria-current="page">
                     Log in

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Airplay, Bell, ChevronsLeft, Grid, Layout, Mail, Maximize, Save, Search, Settings } from 'react-feather'
+import { Airplay, Bell, ChevronsLeft, Grid, Layout, Mail, Save, Search, Settings } from 'react-feather'
 import logoDark from "../assets/logo-dark.png"
 import logoLight from "../assets/logo-light.png"
 import 'bootstrap';
@@ -241,234 +241,11 @@ const navigate = useNavigate();
                   <input type="text" className="form-control" placeholder="Search here..." />
                 </div>
               </li>
-              <li>
-                <a href="#!" onclick="javascript:toggleFullScreen()">
-                  <Maximize />
-                </a>
-              </li>
-              <li className="onhover-dropdown">
-                <a href="javascript:void(0)">
-                  <Save />
-                </a>
-                <div className="notification-dropdown onhover-show-div">
-                  <div className="dropdown-title">
-                    <h6>Recent Attachments</h6>
-                    <a href="reports.html">Show all</a>
-                  </div>
-                  <ul>
-                    <li>
-                      <div className="media">
-                        <div className="icon-notification bg-success-light">
-                          <i className="fas fa-file-word"></i>
-                        </div>
-                        <div className="media-body">
-                          <a href="reports.html">
-                            <h6>Doc_file.doc</h6>
-                          </a>
-                          <span>800MB</span>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="media">
-                        <div className="icon-notification bg-primary-light">
-                          <i className="fas fa-file-image"></i>
-                        </div>
-                        <div className="media-body">
-                          <a href="reports.html">
-                            <h6>Apartment.jpg</h6>
-                          </a>
-                          <span>500kb</span>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="media">
-                        <div className="icon-notification bg-warning-light">
-                          <i className="fas fa-file-pdf"></i>
-                        </div>
-                        <div className="media-body">
-                          <a href="reports.html">
-                            <h6>villa_report.pdf</h6>
-                          </a>
-                          <span>26MB</span>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </li>
-              <li className="onhover-dropdown notification-box">
-                <a href="javascript:void(0)">
-                  <Bell />
-                  <span className="label label-shadow label-pill notification-badge">3</span>
-                </a>
-                <div className="notification-dropdown onhover-show-div">
-                  <div className="dropdown-title">
-                    <h6>Notifications</h6>
-                    <a href="favourites.html">Show all</a>
-                  </div>
-                  <ul>
-                    <li>
-                      <div className="media">
-                        <div className="icon-notification bg-primary-light">
-                          <i className="fab fa-xbox"></i>
-                        </div>
-                        <div className="media-body">
-                          <h6>Item damaged</h6>
-                          <span>8 hours ago, Tadawis 24</span>
-                          <p className="mb-0">"the table is broken:("</p>
-                          <ul className="user-group">
-                            <li>
-                              <a href="javascript:void(0)">
-                                <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fabout%2F4.jpg?alt=media&token=46c2123d-b127-4682-90a7-5d8f95923d26" className="img-fluid" alt="" />
-                              </a>
-                            </li>
-                            <li className="reply">
-                              <a href="javascript:void(0)">
-                                Reply
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="media">
-                        <div className="icon-notification bg-success-light">
-                          <i className="fas fa-file-invoice-dollar"></i>
-                        </div>
-                        <div className="media-body">
-                          <h6>Payment received</h6>
-                          <span>2 hours ago, Bracka 15</span>
-                          <ul className="user-group">
-                            <li>
-                              <a href="javascript:void(0)">
-                                <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fabout%2F1.jpg?alt=media&token=34ed5412-8981-48fa-95d6-2f233d3ce309" className="img-fluid" alt="" />
-                              </a>
-                            </li>
-                            <li>
-                              <a href="javascript:void(0)">
-                                <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fabout%2F2.jpg?alt=media&token=ccc13150-2b6a-4b39-aa7b-e2760eea4632" className="img-fluid" alt="" />
-                              </a>
-                            </li>
-                            <li>
-                              <a href="javascript:void(0)">
-                                <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fabout%2F3.jpg?alt=media&token=e2c70d97-a79f-41d9-9e92-7aa3c0accbbc" className="img-fluid" alt="" />
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="media">
-                        <div className="icon-notification bg-warning-light">
-                          <i className="fas fa-comment-dots"></i>
-                        </div>
-                        <div className="media-body">
-                          <h6>New inquiry</h6>
-                          <span>1 Days ago, Krowada 7</span>
-                          <p className="mb-0">"is the villa still available?"</p>
-                          <ul className="user-group">
-                            <li>
-                              <a href="javascript:void(0)">
-                                <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fabout%2F2.jpg?alt=media&token=ccc13150-2b6a-4b39-aa7b-e2760eea4632" className="img-fluid" alt="" />
-                              </a>
-                            </li>
-                            <li>
-                              <a href="javascript:void(0)">
-                                <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fabout%2F3.jpg?alt=media&token=e2c70d97-a79f-41d9-9e92-7aa3c0accbbc" className="img-fluid" alt="" />
-                              </a>
-                            </li>
-                            <li className="reply">
-                              <a href="javascript:void(0)">
-                                Reply
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </li>
-              <li className="onhover-dropdown">
-                <a href="javascript:void(0)">
-                  <Mail />
-                </a>
-                <div className="notification-dropdown chat-dropdown onhover-show-div">
-                  <div className="dropdown-title">
-                    <h6>Messages</h6>
-                    <a href="user-profile.html">View all</a>
-                  </div>
-                  <ul>
-                    <li>
-                      <div className="media">
-                        <div className="chat-user">
-                          <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F1.jpg?alt=media&token=a6cf07b3-1151-4f23-8047-84ba1aff030a" className="img-fluid" alt="" />
-                        </div>
-                        <div className="media-body">
-                          <a href="user-profile.html">
-                            <h6>Bob Frapples</h6>
-                          </a>
-                          <span>Template Represents simply...</span>
-                        </div>
-                        <div className="status online">online</div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="media">
-                        <div className="chat-user">
-                          <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F3.png?alt=media&token=a43e2409-29f3-481a-a1cd-0923f60b69de" className="img-fluid" alt="" />
-                        </div>
-                        <div className="media-body">
-                          <a href="user-profile.html">
-                            <h6>Greta Life</h6>
-                          </a>
-                          <span>Template Represents simply...</span>
-                        </div>
-                        <div className="status away">Away</div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="media">
-                        <div className="chat-user">
-                          <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F4.jpg?alt=media&token=97859f35-cb19-49dc-999d-8f4e1b196364" className="img-fluid" alt="" />
-                        </div>
-                        <div className="media-body">
-                          <a href="user-profile.html">
-                            <h6>Greta Life</h6>
-                          </a>
-                          <span>Template Represents simply...</span>
-                        </div>
-                        <div className="status online">online</div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="media">
-                        <div className="chat-user">
-                          <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F7.jpg?alt=media&token=643bb5a5-496d-4e33-a86b-cf07c4b20225" className="img-fluid" alt="" />
-                        </div>
-                        <div className="media-body">
-                          <a href="user-profile.html">
-                            <h6>Greta Life</h6>
-                          </a>
-                          <span>Template Represents simply...</span>
-                        </div>
-                        <div className="status busy">Busy</div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </li>
               <li className="profile-avatar onhover-dropdown">
                 <div>
                   <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F3.png?alt=media&token=a43e2409-29f3-481a-a1cd-0923f60b69de" className="img-fluid" alt="" />
                 </div>
                 <ul className="profile-dropdown onhover-show-div">
-                  <li><a href="user-profile.html"><span>Account </span><i data-feather="user"></i></a></li>
-                  <li><a href="listing.html"><span>Listing</span><i data-feather="file-text"></i></a></li>
                   <li onClick={logOut}><a href=""><span>Log Out</span><i data-feather="log-in"></i></a></li>
                 </ul>
               </li>
@@ -482,7 +259,7 @@ const navigate = useNavigate();
           {/* <!-- page sidebar start --> */}
           <div className="page-sidebar">
             <div className="logo-wrap">
-              <a href="index.html">
+              <a href="/property-list">
                 <img src={logoDark} className="img-fluid for-light" alt="" />
                 <img src={logoLight} className="img-fluid for-dark" alt="" />
               </a>
@@ -737,7 +514,7 @@ const navigate = useNavigate();
                     {/* <!-- Breadcrumb start --> */}
                     <ol className="breadcrumb pull-right">
                       <li className="breadcrumb-item">
-                        <a href="index.html">
+                        <a href="/property-list">
                           <i className="fa fa-home"></i>
                         </a>
                       </li>

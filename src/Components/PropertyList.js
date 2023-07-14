@@ -1,354 +1,159 @@
-import { useEffect, useState } from 'react'
-import { Airplay, Bell, ChevronsLeft, Grid, Layout, Mail, Maximize, Save, Search } from 'react-feather'
-import logoDark from "../assets/logo-dark.png"
-import logoLight from "../assets/logo-light.png"
+import { useEffect, useState } from "react";
+import {
+  Airplay,
+  Bell,
+  ChevronsLeft,
+  Grid,
+  Layout,
+  Mail,
+  Save,
+  Search,
+} from "react-feather";
+import logoDark from "../assets/logo-dark.png";
+import logoLight from "../assets/logo-light.png";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../FirebaseAuth/firebase";
-import { Link } from 'react-router-dom';
-import excerptHtml from 'excerpt-html';
+import { Link } from "react-router-dom";
+import excerptHtml from "excerpt-html";
 import { auth } from "../FirebaseAuth/firebase";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 
-
 function PropertyList() {
-    const [propertyList, setPropertyList] = useState([])
-    const navigate = useNavigate();
+  const [propertyList, setPropertyList] = useState([]);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-          if (user) {
-            navigate("/property-list")
-          } else {
-            navigate("/login")
-          }
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate("/property-list");
+      } else {
+        navigate("/login");
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    const fetchList = async () => {
+      let list = [];
+      try {
+        const querySnapshot = await getDocs(collection(db, "propertyDetails"));
+        querySnapshot.forEach((doc) => {
+          list.push({ id: doc.id, ...doc.data() });
         });
-      }, []);
+        setPropertyList(list);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchList();
+  }, []);
 
-    useEffect(() => {
-        const fetchList = async () => {
-            let list = []
-            try {
-                const querySnapshot = await getDocs(collection(db, "propertyDetails"));
-                querySnapshot.forEach((doc) => {
-                    list.push({ id: doc.id, ...doc.data() })
-                });
-                setPropertyList(list)
-            } catch (error) {
-                console.log(error)
-            }
-        };
-        fetchList()
-    }, [])
+  console.log(propertyList);
 
-    console.log(propertyList)
+  return (
+    <div>
+      {/* <!-- Loader start --> */}
+      <div className="loader-wrapper">
+        <div className="row loader-img">
+          <div className="col-12">
+            <img
+              src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Floader-2.gif?alt=media&token=88f706ef-427c-4fc3-ab28-f5fd4dd50e72"
+              className="img-fluid"
+              alt=""
+            />
+          </div>
+        </div>
+      </div>
+      {/* <!-- Loader end --> */}
 
+      <div className="page-wrapper">
+        {/* <!-- page header start --> */}
+        <div className="page-main-header row">
+          <div id="sidebar-toggle" className="toggle-sidebar col-auto">
+            <ChevronsLeft />
+          </div>
 
-    return (
-        <div>
-            {/* <!-- Loader start --> */}
-            <div className="loader-wrapper">
-                <div className="row loader-img">
-                    <div className="col-12">
-                        <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Floader-2.gif?alt=media&token=88f706ef-427c-4fc3-ab28-f5fd4dd50e72" className="img-fluid" alt="" />
-                    </div>
+          <div className="nav-right col p-0">
+            <ul className="header-menu">
+              <li>
+                <div className="d-md-none mobile-search">
+                  <Search />
                 </div>
+                <div className="form-group search-form">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search here..."
+                  />
+                </div>
+              </li>
+              <li className="profile-avatar onhover-dropdown">
+                <div>
+                  <img
+                    src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F3.png?alt=media&token=a43e2409-29f3-481a-a1cd-0923f60b69de"
+                    className="img-fluid"
+                    alt=""
+                  />
+                </div>
+                <ul className="profile-dropdown onhover-show-div">
+                  <li>
+                    <a href="login.html">
+                      <span>Log in</span>
+                      <i data-feather="log-in"></i>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* <!-- page header end --> */}
+        <div className="page-body-wrapper">
+          {/* <!-- page sidebar start --> */}
+          <div className="page-sidebar">
+            <div className="logo-wrap">
+              <a href="/property-list">
+                <img src={logoDark} className="img-fluid for-light" alt="" />
+                <img src={logoLight} className="img-fluid for-dark" alt="" />
+              </a>
+              <div className="back-btn d-lg-none d-inline-block">
+                <ChevronsLeft />
+              </div>
             </div>
-            {/* <!-- Loader end --> */}
-
-            <div className="page-wrapper">
-
-                {/* <!-- page header start --> */}
-                <div className="page-main-header row">
-                    <div id="sidebar-toggle" className="toggle-sidebar col-auto">
-                        <ChevronsLeft />
-                    </div>
-
-                    <div className="nav-right col p-0">
-                        <ul className="header-menu">
-                            <li>
-                                <div className="d-md-none mobile-search">
-                                    <Search />
-                                </div>
-                                <div className="form-group search-form">
-                                    <input type="text" className="form-control" placeholder="Search here..." />
-                                </div>
-                            </li>
-                            <li>
-                                <a href="#!" onclick="javascript:toggleFullScreen()">
-                                    <Maximize />
-                                </a>
-                            </li>
-                            <li className="onhover-dropdown">
-                                <a href="javascript:void(0)">
-                                    <Save />
-                                </a>
-                                <div className="notification-dropdown onhover-show-div">
-                                    <div className="dropdown-title">
-                                        <h6>Recent Attachments</h6>
-                                        <a href="reports.html">Show all</a>
-                                    </div>
-                                    <ul>
-                                        <li>
-                                            <div className="media">
-                                                <div className="icon-notification bg-success-light">
-                                                    <i className="fas fa-file-word"></i>
-                                                </div>
-                                                <div className="media-body">
-                                                    <a href="reports.html">
-                                                        <h6>Doc_file.doc</h6>
-                                                    </a>
-                                                    <span>800MB</span>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div className="media">
-                                                <div className="icon-notification bg-primary-light">
-                                                    <i className="fas fa-file-image"></i>
-                                                </div>
-                                                <div className="media-body">
-                                                    <a href="reports.html">
-                                                        <h6>Apartment.jpg</h6>
-                                                    </a>
-                                                    <span>500kb</span>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div className="media">
-                                                <div className="icon-notification bg-warning-light">
-                                                    <i className="fas fa-file-pdf"></i>
-                                                </div>
-                                                <div className="media-body">
-                                                    <a href="reports.html">
-                                                        <h6>villa_report.pdf</h6>
-                                                    </a>
-                                                    <span>26MB</span>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li className="onhover-dropdown notification-box">
-                                <a href="javascript:void(0)">
-                                    <Bell />
-                                    <span className="label label-shadow label-pill notification-badge">3</span>
-                                </a>
-                                <div className="notification-dropdown onhover-show-div">
-                                    <div className="dropdown-title">
-                                        <h6>Notifications</h6>
-                                        <a href="favourites.html">Show all</a>
-                                    </div>
-                                    <ul>
-                                        <li>
-                                            <div className="media">
-                                                <div className="icon-notification bg-primary-light">
-                                                    <i className="fab fa-xbox"></i>
-                                                </div>
-                                                <div className="media-body">
-                                                    <h6>Item damaged</h6>
-                                                    <span>8 hours ago, Tadawis 24</span>
-                                                    <p className="mb-0">"the table is broken:("</p>
-                                                    <ul className="user-group">
-                                                        <li>
-                                                            <a href="javascript:void(0)">
-                                                                <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F4.jpg?alt=media&token=97859f35-cb19-49dc-999d-8f4e1b196364" className="img-fluid" alt="" />
-                                                            </a>
-                                                        </li>
-                                                        <li className="reply">
-                                                            <a href="javascript:void(0)">
-                                                                Reply
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div className="media">
-                                                <div className="icon-notification bg-success-light">
-                                                    <i className="fas fa-file-invoice-dollar"></i>
-                                                </div>
-                                                <div className="media-body">
-                                                    <h6>Payment received</h6>
-                                                    <span>2 hours ago, Bracka 15</span>
-                                                    <ul className="user-group">
-                                                        <li>
-                                                            <a href="javascript:void(0)">
-                                                                <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fabout%2F1.jpg?alt=media&token=34ed5412-8981-48fa-95d6-2f233d3ce309" className="img-fluid" alt="" />
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="javascript:void(0)">
-                                                                <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fabout%2F2.jpg?alt=media&token=ccc13150-2b6a-4b39-aa7b-e2760eea4632" className="img-fluid" alt="" />
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="javascript:void(0)">
-                                                                <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fabout%2F3.jpg?alt=media&token=e2c70d97-a79f-41d9-9e92-7aa3c0accbbc" className="img-fluid" alt="" />
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div className="media">
-                                                <div className="icon-notification bg-warning-light">
-                                                    <i className="fas fa-comment-dots"></i>
-                                                </div>
-                                                <div className="media-body">
-                                                    <h6>New inquiry</h6>
-                                                    <span>1 Days ago, Krowada 7</span>
-                                                    <p className="mb-0">"is the villa still available?"</p>
-                                                    <ul className="user-group">
-                                                        <li>
-                                                            <a href="javascript:void(0)">
-                                                                <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fabout%2F2.jpg?alt=media&token=ccc13150-2b6a-4b39-aa7b-e2760eea4632" className="img-fluid" alt="" />
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="javascript:void(0)">
-                                                                <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fabout%2F3.jpg?alt=media&token=e2c70d97-a79f-41d9-9e92-7aa3c0accbbc" className="img-fluid" alt="" />
-                                                            </a>
-                                                        </li>
-                                                        <li className="reply">
-                                                            <a href="javascript:void(0)">
-                                                                Reply
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li className="onhover-dropdown">
-                                <a href="javascript:void(0)">
-                                    <Mail />
-                                </a>
-                                <div className="notification-dropdown chat-dropdown onhover-show-div">
-                                    <div className="dropdown-title">
-                                        <h6>Messages</h6>
-                                        <a href="user-profile.html">View all</a>
-                                    </div>
-                                    <ul>
-                                        <li>
-                                            <div className="media">
-                                                <div className="chat-user">
-                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F1.jpg?alt=media&token=a6cf07b3-1151-4f23-8047-84ba1aff030a" className="img-fluid" alt="" />
-                                                </div>
-                                                <div className="media-body">
-                                                    <a href="user-profile.html">
-                                                        <h6>Bob Frapples</h6>
-                                                    </a>
-                                                    <span>Template Represents simply...</span>
-                                                </div>
-                                                <div className="status online">online</div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div className="media">
-                                                <div className="chat-user">
-                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F3.png?alt=media&token=a43e2409-29f3-481a-a1cd-0923f60b69de" className="img-fluid" alt="" />
-                                                </div>
-                                                <div className="media-body">
-                                                    <a href="user-profile.html">
-                                                        <h6>Greta Life</h6>
-                                                    </a>
-                                                    <span>Template Represents simply...</span>
-                                                </div>
-                                                <div className="status away">Away</div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div className="media">
-                                                <div className="chat-user">
-                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F4.jpg?alt=media&token=97859f35-cb19-49dc-999d-8f4e1b196364" className="img-fluid" alt="" />
-                                                </div>
-                                                <div className="media-body">
-                                                    <a href="user-profile.html">
-                                                        <h6>Greta Life</h6>
-                                                    </a>
-                                                    <span>Template Represents simply...</span>
-                                                </div>
-                                                <div className="status online">online</div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div className="media">
-                                                <div className="chat-user">
-                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F7.jpg?alt=media&token=643bb5a5-496d-4e33-a86b-cf07c4b20225" className="img-fluid" alt="" />
-                                                </div>
-                                                <div className="media-body">
-                                                    <a href="user-profile.html">
-                                                        <h6>Greta Life</h6>
-                                                    </a>
-                                                    <span>Template Represents simply...</span>
-                                                </div>
-                                                <div className="status busy">Busy</div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li className="profile-avatar onhover-dropdown">
-                                <div>
-                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F3.png?alt=media&token=a43e2409-29f3-481a-a1cd-0923f60b69de" className="img-fluid" alt="" />
-                                </div>
-                                <ul className="profile-dropdown onhover-show-div">
-                                    <li><a href="user-profile.html"><span>Account </span><i data-feather="user"></i></a></li>
-                                    <li><a href="listing.html"><span>Listing</span><i data-feather="file-text"></i></a></li>
-                                    <li><a href="login.html"><span>Log in</span><i data-feather="log-in"></i></a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
+            <div className="main-sidebar">
+              <div className="user-profile">
+                <div className="media">
+                  <div className="change-pic">
+                    <img
+                      src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F3.png?alt=media&token=a43e2409-29f3-481a-a1cd-0923f60b69de"
+                      className="img-fluid"
+                      alt=""
+                    />
+                  </div>
+                  <div className="media-body">
+                    <a href="user-profile.html">
+                      <h6>Zack Lee</h6>
+                    </a>
+                    <span className="font-roboto">zackle@gmail.com</span>
+                  </div>
                 </div>
-
-                {/* <!-- page header end --> */}
-                <div className="page-body-wrapper">
-
-                    {/* <!-- page sidebar start --> */}
-                    <div className="page-sidebar">
-                        <div className="logo-wrap">
-                            <a href="index.html">
-                                <img src={logoDark} className="img-fluid for-light" alt="" />
-                                <img src={logoLight} className="img-fluid for-dark" alt="" />
-                            </a>
-                            <div className="back-btn d-lg-none d-inline-block">
-                                <ChevronsLeft />
-                            </div>
-                        </div>
-                        <div className="main-sidebar">
-                            <div className="user-profile">
-                                <div className="media">
-                                    <div className="change-pic">
-                                        <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F3.png?alt=media&token=a43e2409-29f3-481a-a1cd-0923f60b69de" className="img-fluid" alt="" />
-                                    </div>
-                                    <div className="media-body">
-                                        <a href="user-profile.html"><h6>Zack Lee</h6></a>
-                                        <span className="font-roboto">zackle@gmail.com</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="mainsidebar">
-                                <ul className="sidebar-menu custom-scrollbar">
-                                    <li className="sidebar-item">
-                                        <a href="index.html" className="sidebar-link only-link">
-                                            <Airplay />
-                                            <span>Dashboard</span>
-                                        </a>
-                                    </li>
-                                    <li className="sidebar-item">
-                                        <a href="/admin-panel" className="sidebar-link">
-                                            <Grid />
-                                            <span>Add properties</span>
-                                        </a>
-                                        {/* <ul className="nav-submenu menu-content">
+              </div>
+              <div id="mainsidebar">
+                <ul className="sidebar-menu custom-scrollbar">
+                  {/* <li className="sidebar-item">
+                    <a href="/property-list" className="sidebar-link only-link">
+                      <Airplay />
+                      <span>Dashboard</span>
+                    </a>
+                  </li> */}
+                  <li className="sidebar-item">
+                    <a href="/admin-panel" className="sidebar-link">
+                      <Grid />
+                      <span>Add properties</span>
+                    </a>
+                    {/* <ul className="nav-submenu menu-content">
                                     <li>
                                         <a href="add-property.html">
                                             <i data-feather="chevrons-right"></i>
@@ -375,14 +180,17 @@ function PropertyList() {
                                     </li>
                                     
                                 </ul> */}
-                                    </li>
-                                    <li className="sidebar-item">
-                                        <a href="javascript:void(0)" className="sidebar-link active">
-                                            <Layout />
-                                            <span>Property List</span>
-                                        </a>
-                                    </li>
-                                    {/* <ul className="nav-submenu menu-content">
+                  </li>
+                  <li className="sidebar-item">
+                    <a
+                      href="javascript:void(0)"
+                      className="sidebar-link active"
+                    >
+                      <Layout />
+                      <span>Property List</span>
+                    </a>
+                  </li>
+                  {/* <ul className="nav-submenu menu-content">
                                     <li>
                                         <a href="user-profile.html">
                                             <i data-feather="chevrons-right"></i>
@@ -415,7 +223,7 @@ function PropertyList() {
                                     </li>
                                 </ul>
                             </li> */}
-                                    {/* <li className="sidebar-item">
+                  {/* <li className="sidebar-item">
                                 <a href="javascript:void(0)" className="sidebar-link">
                                     <i data-feather="user-plus"></i>
                                     <span>Agents</span>
@@ -545,153 +353,266 @@ function PropertyList() {
                                     <button type="button" onclick=" window.open('https://themeforest.net/user/pixelstrap/portfolio', '_blank');" className="btn btn-pill btn-gradient color-4 btn-sm mt-2 fw-bold">Buy Now</button>
                                 </div>
                             </li> */}
-                                </ul>
-                            </div>
-                        </div>
+                </ul>
+              </div>
+            </div>
+          </div>
+          {/* <!-- page sidebar end --> */}
+
+          <div className="page-body">
+            {/* <!-- Container-fluid start --> */}
+            <div className="container-fluid">
+              <div className="page-header">
+                <div className="row">
+                  <div className="col-sm-6">
+                    <div className="page-header-left">
+                      <h3>
+                        Property list
+                        <small>Welcome to admin panel</small>
+                      </h3>
                     </div>
-                    {/* <!-- page sidebar end --> */}
+                  </div>
+                  <div className="col-sm-6">
+                    {/* <!-- Breadcrumb start --> */}
+                    <ol className="breadcrumb pull-right">
+                      <li className="breadcrumb-item">
+                        <a href="/property-list">
+                          <i className="fa fa-home"></i>
+                        </a>
+                      </li>
+                      <li className="breadcrumb-item active">My properties</li>
+                    </ol>
+                    {/* <!-- Breadcrumb end --> */}
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* <!-- Container-fluid end --> */}
 
-                    <div className="page-body">
-
-                        {/* <!-- Container-fluid start --> */}
-                        <div className="container-fluid">
-                            <div className="page-header">
-                                <div className="row">
-                                    <div className="col-sm-6">
-                                        <div className="page-header-left">
-                                            <h3>Property list
-                                                <small>Welcome to admin panel</small>
-                                            </h3>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-6">
-
-                                        {/* <!-- Breadcrumb start --> */}
-                                        <ol className="breadcrumb pull-right">
-                                            <li className="breadcrumb-item">
-                                                <a href="index.html">
-                                                    <i className="fa fa-home"></i>
-                                                </a>
-                                            </li>
-                                            <li className="breadcrumb-item active">My properties</li>
-                                        </ol>
-                                        {/* <!-- Breadcrumb end --> */}
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {/* <!-- Container-fluid end --> */}
-
-                        {/* <!-- Container-fluid start --> */}
-                        <div className="container-fluid">
-                            <div className="row">
-                                <div className="col-lg-12">
-                                    <div className="property-admin">
-                                        <div className="property-section section-sm">
-                                            <div className="row ratio_55 property-grid-2 property-map map-with-back">
-                                                <div className="col-12">
-                                                    <div className="filter-panel">
-                                                        <div className="listing-option">
-                                                            <h5 className="mb-0">Showing <span>1-15 of 69</span> Listings</h5>
-                                                            <div>
-                                                                <div className="d-flex">
-                                                                    {/* <span className="m-r-10">Map view</span>
+            {/* <!-- Container-fluid start --> */}
+            <div className="container-fluid">
+              <div className="row">
+                <div className="col-lg-12">
+                  <div className="property-admin">
+                    <div className="property-section section-sm">
+                      <div className="row ratio_55 property-grid-2 property-map map-with-back">
+                        <div className="col-12">
+                          <div className="filter-panel">
+                            <div className="listing-option">
+                              <h5 className="mb-0">
+                                Showing <span>1-15 of 69</span> Listings
+                              </h5>
+                              <div>
+                                <div className="d-flex">
+                                  {/* <span className="m-r-10">Map view</span>
                                                              <label className="switch">
                                                                  <input type="checkbox" className="option-list" name="step_1" value="ani1" checked=""/><span className="switch-state"></span>
                                                              </label>
                                                              <span className="m-l-10">List view</span> */}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 
-                                                <div className="col-xl-12">
-
-                                                    <div className="property-2 row column-sm property-label property-grid">
-                                                        {propertyList.map((list) => {
-                                                            return (
-                                                                <div className="col-xl-4 col-md-6 xl-6">
-                                                                    <div className="property-box">
-                                                                        <div className="property-image">
-                                                                            <div className="property-slider" >
-                                                                                <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
-                                                                                    {/* <ol className="carousel-indicators">
+                        <div className="col-xl-12">
+                          <div className="property-2 row column-sm property-label property-grid">
+                            {propertyList.map((list) => {
+                              return (
+                                <div className="col-xl-4 col-md-6 xl-6">
+                                  <div className="property-box">
+                                    <div className="property-image">
+                                      <div className="property-slider">
+                                        <div
+                                          id="carouselExampleIndicators"
+                                          className="carousel slide"
+                                          data-ride="carousel"
+                                        >
+                                          {/* <ol className="carousel-indicators">
                                                                                         <li data-target="#carouselExampleIndicators" data-slide-to="0" className="active"></li>
                                                                                         <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
                                                                                         <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
                                                                                     </ol> */}
-                                                                                    <div className="carousel-inner">
-                                                                                        <div className="carousel-item active">
-                                                                                            <img className="d-block w-100" src={list.urlarray[0]} alt="First slide" width="600px" height="300px" />
-                                                                                        </div>
-                                                                                        <div className="carousel-item">
-                                                                                            <img className="d-block w-100" src={list.urlarray[1]} alt="Second slide" width="600px" height="300px" />
-                                                                                        </div>
-                                                                                        {list.urlarray?.[2] ? <div className="carousel-item">
-                                                                                            <img className="d-block w-100" src={list.urlarray[2]} alt="Third slide" width="600px" height="300px" />
-                                                                                        </div> : "" }
-                                                                                        {list.urlarray?.[3] ? <div className="carousel-item">
-                                                                                            <img className="d-block w-100" src={list.urlarray[3]} alt="Fourth slide" width="600px" height="300px" />
-                                                                                        </div> : ""}
-                                                                                        {list.urlarray?.[4] ? <div className="carousel-item">
-                                                                                            <img className="d-block w-100" src={list.urlarray?.[4]} alt="fifth slide" width="1450px"
-                                                                                                height="700px" />
-                                                                                        </div> : ""}
-                                                                                        {list.urlarray?.[5] ? <div className="carousel-item">
-                                                                                            <img className="d-block w-100" src={list.urlarray?.[5]} alt="Sixth slide" width="1450px"
-                                                                                                height="700px" />
-                                                                                        </div> : ""}
-                                                                                    </div>
-                                                                                    <a className="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                                                                                        <span className="carousel-control-prev" aria-hidden="true"></span>
-                                                                                        <span className="sr-only">Previous</span>
-                                                                                    </a>
-                                                                                    <a className="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                                                                                        <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                                                                                        <span className="sr-only">Next</span>
-                                                                                    </a>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div className="labels-left">
-                                                                                <div>
-                                                                                    <span className="label label-shadow">{list.propertyStatus}</span>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div className="seen-data">
-                                                                                <i data-feather="camera"></i>
-                                                                                <span>04</span>
-                                                                            </div>
+                                          <div className="carousel-inner">
+                                            <div className="carousel-item active">
+                                              <img
+                                                className="d-block w-100"
+                                                src={list.urlarray[0]}
+                                                alt="First slide"
+                                                width="600px"
+                                                height="300px"
+                                              />
+                                            </div>
+                                            <div className="carousel-item">
+                                              <img
+                                                className="d-block w-100"
+                                                src={list.urlarray[1]}
+                                                alt="Second slide"
+                                                width="600px"
+                                                height="300px"
+                                              />
+                                            </div>
+                                            {list.urlarray?.[2] ? (
+                                              <div className="carousel-item">
+                                                <img
+                                                  className="d-block w-100"
+                                                  src={list.urlarray[2]}
+                                                  alt="Third slide"
+                                                  width="600px"
+                                                  height="300px"
+                                                />
+                                              </div>
+                                            ) : (
+                                              ""
+                                            )}
+                                            {list.urlarray?.[3] ? (
+                                              <div className="carousel-item">
+                                                <img
+                                                  className="d-block w-100"
+                                                  src={list.urlarray[3]}
+                                                  alt="Fourth slide"
+                                                  width="600px"
+                                                  height="300px"
+                                                />
+                                              </div>
+                                            ) : (
+                                              ""
+                                            )}
+                                            {list.urlarray?.[4] ? (
+                                              <div className="carousel-item">
+                                                <img
+                                                  className="d-block w-100"
+                                                  src={list.urlarray?.[4]}
+                                                  alt="fifth slide"
+                                                  width="1450px"
+                                                  height="700px"
+                                                />
+                                              </div>
+                                            ) : (
+                                              ""
+                                            )}
+                                            {list.urlarray?.[5] ? (
+                                              <div className="carousel-item">
+                                                <img
+                                                  className="d-block w-100"
+                                                  src={list.urlarray?.[5]}
+                                                  alt="Sixth slide"
+                                                  width="1450px"
+                                                  height="700px"
+                                                />
+                                              </div>
+                                            ) : (
+                                              ""
+                                            )}
+                                          </div>
+                                          <a
+                                            className="carousel-control-prev"
+                                            href="#carouselExampleIndicators"
+                                            role="button"
+                                            data-slide="prev"
+                                          >
+                                            <span
+                                              className="carousel-control-prev"
+                                              aria-hidden="true"
+                                            ></span>
+                                            <span className="sr-only">
+                                              Previous
+                                            </span>
+                                          </a>
+                                          <a
+                                            className="carousel-control-next"
+                                            href="#carouselExampleIndicators"
+                                            role="button"
+                                            data-slide="next"
+                                          >
+                                            <span
+                                              className="carousel-control-next-icon"
+                                              aria-hidden="true"
+                                            ></span>
+                                            <span className="sr-only">
+                                              Next
+                                            </span>
+                                          </a>
+                                        </div>
+                                      </div>
+                                      <div className="labels-left">
+                                        <div>
+                                          <span className="label label-shadow">
+                                            {list.propertyStatus}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div className="seen-data">
+                                        <i data-feather="camera"></i>
+                                        <span>04</span>
+                                      </div>
+                                    </div>
 
-                                                                        </div>
+                                    <div className="property-details">
+                                      <span className="font-roboto">
+                                        {list.city}
+                                      </span>
+                                      <Link to={`/property-details/${list.id}`}>
+                                        <h3>{list.propertyType}</h3>
+                                      </Link>
+                                      <h6>₹{list.price}</h6>
+                                      <p className="font-roboto light-font">
+                                        {excerptHtml(list.description, 200)}
+                                      </p>
+                                      <ul>
+                                        <li>
+                                          <img
+                                            src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fdouble-bed.svg?alt=media&token=adce4401-145c-4800-a0f3-6935bfc6578e"
+                                            className="img-fluid"
+                                            alt=""
+                                          />
+                                          Bed : 4
+                                        </li>
+                                        <li>
+                                          <img
+                                            src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fbathroom.svg?alt=media&token=2dd2178a-998e-4aa0-ba60-a4ca1dfe65db"
+                                            className="img-fluid"
+                                            alt=""
+                                          />
+                                          Baths : 4
+                                        </li>
+                                        <li>
+                                          <img
+                                            src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fsquare-ruler-tool.svg?alt=media&token=8c121dad-da46-4f7f-b8b3-c62fe1ad2a1c"
+                                            className="img-fluid ruler-tool"
+                                            alt=""
+                                          />
+                                          Sq Ft : 4
+                                        </li>
+                                      </ul>
+                                      <div className="property-btn d-flex">
+                                        {/* <span>August 4, 2022</span> */}
+                                        <Link
+                                          to={`/property-details/${list.id}`}
+                                        >
+                                          <button
+                                            type="button"
+                                            className="btn btn-dashed btn-pill color-2"
+                                          >
+                                            Details
+                                          </button>
+                                        </Link>
+                                        <a href={`/edit-property/${list.id}`}>
+                                          <button
+                                            type="button"
+                                            className="btn btn-dashed btn-pill color-2"
+                                          >
+                                            Edit
+                                          </button>
+                                        </a>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
 
-                                                                        <div className="property-details">
-                                                                            <span className="font-roboto">{list.city}</span>
-                                                                            <Link to={`/property-details/${list.id}`}>
-                                                                                <h3>{list.propertyType}</h3>
-                                                                            </Link>
-                                                                            <h6>₹{list.price}</h6>
-                                                                            <p className="font-roboto light-font">{excerptHtml(list.description, 200)}</p>
-                                                                            <ul>
-                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fdouble-bed.svg?alt=media&token=adce4401-145c-4800-a0f3-6935bfc6578e" className="img-fluid" alt="" />Bed : 4</li>
-                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fbathroom.svg?alt=media&token=2dd2178a-998e-4aa0-ba60-a4ca1dfe65db" className="img-fluid" alt="" />Baths : 4</li>
-                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fsquare-ruler-tool.svg?alt=media&token=8c121dad-da46-4f7f-b8b3-c62fe1ad2a1c" className="img-fluid ruler-tool" alt="" />Sq Ft : 4</li>
-                                                                            </ul>
-                                                                            <div className="property-btn d-flex">
-                                                                                {/* <span>August 4, 2022</span> */}
-                                                                                <Link to={`/property-details/${list.id}`}>
-                                                                                    <button type="button" className="btn btn-dashed btn-pill color-2">Details</button>
-                                                                                </Link>
-                                                                                <a href={`/edit-property/${list.id}`}><button type="button" className="btn btn-dashed btn-pill color-2">Edit</button></a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            );
-                                                        })}
-
-                                                        {/* <div className="col-xl-4 col-md-6 xl-6">
+                            {/* <div className="col-xl-4 col-md-6 xl-6">
                                                                     <div className="property-box">
                                                                         <div className="property-image">
                                                                             <div className="property-slider">
@@ -996,55 +917,88 @@ function PropertyList() {
                                                                         </div>
                                                                     </div>
                                                                 </div> */}
-                                                    </div>
+                          </div>
 
-                                                    <nav className="theme-pagination">
-                                                        <ul className="pagination">
-                                                            <li className="page-item">
-                                                                <a className="page-link" href="javascript:void(0)" aria-label="Previous">
-                                                                    <span aria-hidden="true">«</span>
-                                                                    <span className="sr-only">Previous</span>
-                                                                </a>
-                                                            </li>
-                                                            <li className="page-item active"><a className="page-link" href="javascript:void(0)">1</a></li>
-                                                            <li className="page-item"><a className="page-link" href="javascript:void(0)">2</a></li>
-                                                            <li className="page-item"><a className="page-link" href="javascript:void(0)">3</a></li>
-                                                            <li className="page-item">
-                                                                <a className="page-link" href="javascript:void(0)" aria-label="Next">
-                                                                    <span aria-hidden="true">»</span>
-                                                                    <span className="sr-only">Next</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </nav>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                          <nav className="theme-pagination">
+                            <ul className="pagination">
+                              <li className="page-item">
+                                <a
+                                  className="page-link"
+                                  href="javascript:void(0)"
+                                  aria-label="Previous"
+                                >
+                                  <span aria-hidden="true">«</span>
+                                  <span className="sr-only">Previous</span>
+                                </a>
+                              </li>
+                              <li className="page-item active">
+                                <a
+                                  className="page-link"
+                                  href="javascript:void(0)"
+                                >
+                                  1
+                                </a>
+                              </li>
+                              <li className="page-item">
+                                <a
+                                  className="page-link"
+                                  href="javascript:void(0)"
+                                >
+                                  2
+                                </a>
+                              </li>
+                              <li className="page-item">
+                                <a
+                                  className="page-link"
+                                  href="javascript:void(0)"
+                                >
+                                  3
+                                </a>
+                              </li>
+                              <li className="page-item">
+                                <a
+                                  className="page-link"
+                                  href="javascript:void(0)"
+                                  aria-label="Next"
+                                >
+                                  <span aria-hidden="true">»</span>
+                                  <span className="sr-only">Next</span>
+                                </a>
+                              </li>
+                            </ul>
+                          </nav>
                         </div>
-                        {/* <!-- Container-fluid end --> */}
+                      </div>
                     </div>
-
-                    {/* <!-- footer start --> */}
-                    <footer className="footer">
-                        <div className="container-fluid">
-                            <div className="row">
-                                <div className="col-md-6 footer-copyright">
-                                    <p className="mb-0">Copyright 2022 © Crowdpe All rights reserved.</p>
-                                </div>
-                                <div className="col-md-6">
-                                    <p className="float-end mb-0">Developed with  <i className="fa fa-heart font-danger"></i></p>
-                                </div>
-                            </div>
-                        </div>
-                    </footer>
-                    {/* <!-- footer end --> */}
+                  </div>
                 </div>
+              </div>
             </div>
+            {/* <!-- Container-fluid end --> */}
+          </div>
 
-            {/* <!-- tap to top start -->
+          {/* <!-- footer start --> */}
+          <footer className="footer">
+            <div className="container-fluid">
+              <div className="row">
+                <div className="col-md-6 footer-copyright">
+                  <p className="mb-0">
+                    Copyright 2022 © Crowdpe All rights reserved.
+                  </p>
+                </div>
+                <div className="col-md-6">
+                  <p className="float-end mb-0">
+                    Developed with <i className="fa fa-heart font-danger"></i>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </footer>
+          {/* <!-- footer end --> */}
+        </div>
+      </div>
+
+      {/* <!-- tap to top start -->
     <div className="tap-top">
         <div>
             <i className="fas fa-arrow-up"></i>
@@ -1102,10 +1056,9 @@ function PropertyList() {
             </div>
         </div>
     </div> */}
-            {/* <!-- customizer end --> */}
-
-        </div>
-    )
+      {/* <!-- customizer end --> */}
+    </div>
+  );
 }
 
-export default PropertyList
+export default PropertyList;
