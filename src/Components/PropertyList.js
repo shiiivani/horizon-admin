@@ -1,9 +1,49 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
 import { Airplay, Bell, ChevronsLeft, Grid, Layout, Mail, Maximize, Save, Search } from 'react-feather'
 import logoDark from "../assets/logo-dark.png"
 import logoLight from "../assets/logo-light.png"
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../FirebaseAuth/firebase";
+import { Link } from 'react-router-dom';
+import excerptHtml from 'excerpt-html';
+import { auth } from "../FirebaseAuth/firebase";
+import { useNavigate } from 'react-router-dom';
+import { onAuthStateChanged } from "firebase/auth";
+
 
 function PropertyList() {
+    const [propertyList, setPropertyList] = useState([])
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            navigate("/property-list")
+          } else {
+            navigate("/login")
+          }
+        });
+      }, []);
+
+    useEffect(() => {
+        const fetchList = async () => {
+            let list = []
+            try {
+                const querySnapshot = await getDocs(collection(db, "propertyDetails"));
+                querySnapshot.forEach((doc) => {
+                    list.push({ id: doc.id, ...doc.data() })
+                });
+                setPropertyList(list)
+            } catch (error) {
+                console.log(error)
+            }
+        };
+        fetchList()
+    }, [])
+
+    console.log(propertyList)
+
+
     return (
         <div>
             {/* <!-- Loader start --> */}
@@ -566,374 +606,398 @@ function PropertyList() {
                                                         </div>
                                                     </div>
                                                 </div>
+
                                                 <div className="col-xl-12">
+
                                                     <div className="property-2 row column-sm property-label property-grid">
-                                                        <div className="col-xl-4 col-md-6 xl-6">
-                                                            <div className="property-box">
-                                                                <div className="property-image">
-                                                                    <div className="property-slider">
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F1.jpg?alt=media&token=b4a15bf4-cccd-4f36-80e1-4baf629953fe" className="bg-img" alt="" width="600px" height="400px" />
+                                                        {propertyList.map((list) => {
+                                                            return (
+                                                                <div className="col-xl-4 col-md-6 xl-6">
+                                                                    <div className="property-box">
+                                                                        <div className="property-image">
+                                                                            <div className="property-slider" >
+                                                                                <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
+                                                                                    {/* <ol className="carousel-indicators">
+                                                                                        <li data-target="#carouselExampleIndicators" data-slide-to="0" className="active"></li>
+                                                                                        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                                                                                        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                                                                                    </ol> */}
+                                                                                    <div className="carousel-inner">
+                                                                                        <div className="carousel-item active">
+                                                                                            <img className="d-block w-100" src={list.urlarray[0]} alt="First slide" width="600px" height="300px" />
+                                                                                        </div>
+                                                                                        <div className="carousel-item">
+                                                                                            <img className="d-block w-100" src={list.urlarray[1]} alt="Second slide" width="600px" height="300px" />
+                                                                                        </div>
+                                                                                        {list.urlarray?.[2] ? <div className="carousel-item">
+                                                                                            <img className="d-block w-100" src={list.urlarray[2]} alt="Third slide" width="600px" height="300px" />
+                                                                                        </div> : "" }
+                                                                                        {list.urlarray?.[3] ? <div className="carousel-item">
+                                                                                            <img className="d-block w-100" src={list.urlarray[3]} alt="Fourth slide" width="600px" height="300px" />
+                                                                                        </div> : ""}
+                                                                                        {list.urlarray?.[4] ? <div className="carousel-item">
+                                                                                            <img className="d-block w-100" src={list.urlarray?.[4]} alt="fifth slide" width="1450px"
+                                                                                                height="700px" />
+                                                                                        </div> : ""}
+                                                                                        {list.urlarray?.[5] ? <div className="carousel-item">
+                                                                                            <img className="d-block w-100" src={list.urlarray?.[5]} alt="Sixth slide" width="1450px"
+                                                                                                height="700px" />
+                                                                                        </div> : ""}
+                                                                                    </div>
+                                                                                    <a className="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                                                                                        <span className="carousel-control-prev" aria-hidden="true"></span>
+                                                                                        <span className="sr-only">Previous</span>
+                                                                                    </a>
+                                                                                    <a className="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                                                                                        <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                                                                        <span className="sr-only">Next</span>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className="labels-left">
+                                                                                <div>
+                                                                                    <span className="label label-shadow">{list.propertyStatus}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className="seen-data">
+                                                                                <i data-feather="camera"></i>
+                                                                                <span>04</span>
+                                                                            </div>
 
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F2.jpg?alt=media&token=02d59161-229e-415a-8e8a-7f6f69aa0b5e" className="bg-img" alt="" width="600px" height="400px" />
+                                                                        </div>
 
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F3.jpg?alt=media&token=9429c4ec-99d2-46c6-be3c-4fc961660a64" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F4.jpg?alt=media&token=2774369b-8a80-4459-8227-c3c245627c70" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                    </div>
-                                                                    <div className="labels-left">
-                                                                        <div>
-                                                                            <span className="label label-shadow">sale</span>
+                                                                        <div className="property-details">
+                                                                            <span className="font-roboto">{list.city}</span>
+                                                                            <Link to={`/property-details/${list.id}`}>
+                                                                                <h3>{list.propertyType}</h3>
+                                                                            </Link>
+                                                                            <h6>₹{list.price}</h6>
+                                                                            <p className="font-roboto light-font">{excerptHtml(list.description, 200)}</p>
+                                                                            <ul>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fdouble-bed.svg?alt=media&token=adce4401-145c-4800-a0f3-6935bfc6578e" className="img-fluid" alt="" />Bed : 4</li>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fbathroom.svg?alt=media&token=2dd2178a-998e-4aa0-ba60-a4ca1dfe65db" className="img-fluid" alt="" />Baths : 4</li>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fsquare-ruler-tool.svg?alt=media&token=8c121dad-da46-4f7f-b8b3-c62fe1ad2a1c" className="img-fluid ruler-tool" alt="" />Sq Ft : 4</li>
+                                                                            </ul>
+                                                                            <div className="property-btn d-flex">
+                                                                                {/* <span>August 4, 2022</span> */}
+                                                                                <Link to={`/property-details/${list.id}`}>
+                                                                                    <button type="button" className="btn btn-dashed btn-pill color-2">Details</button>
+                                                                                </Link>
+                                                                                <a href={`/edit-property/${list.id}`}><button type="button" className="btn btn-dashed btn-pill color-2">Edit</button></a>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div className="seen-data">
-                                                                        <i data-feather="camera"></i>
-                                                                        <span>04</span>
-                                                                    </div>
-                                                                    {/* <div className="overlay-property-box">
+                                                                </div>
+                                                            );
+                                                        })}
+
+                                                        {/* <div className="col-xl-4 col-md-6 xl-6">
+                                                                    <div className="property-box">
+                                                                        <div className="property-image">
+                                                                            <div className="property-slider">
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F3.jpg?alt=media&token=9429c4ec-99d2-46c6-be3c-4fc961660a64" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F1.jpg?alt=media&token=b4a15bf4-cccd-4f36-80e1-4baf629953fe" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F4.jpg?alt=media&token=2774369b-8a80-4459-8227-c3c245627c70" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F2.jpg?alt=media&token=02d59161-229e-415a-8e8a-7f6f69aa0b5e" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                            </div>
+                                                                            <div className="labels-left">
+                                                                                <div>
+                                                                                    <span className="label label-dark">for rent</span>
+                                                                                </div>
+                                                                                <span className="label label-success">featured</span>
+                                                                            </div>
+                                                                            <div className="seen-data">
+                                                                                <i data-feather="camera"></i>
+                                                                                <span>06</span>
+                                                                            </div>
+                                                                             <div className="overlay-property-box">
                                                                 <a href="https://themes.pixelstrap.com/sheltos/main/compare.html" className="effect-round" data-bs-toggle="tooltip" data-bs-placement="left" title="Compare"> 
                                                                     <i data-feather="shuffle"></i>
                                                                 </a>
                                                                 <a href="favourites.html" className="effect-round like" data-bs-toggle="tooltip" data-bs-placement="left" title="wishlist">
                                                                     <i data-feather="heart"></i>                                                                               
                                                                 </a>
-                                                            </div> */}
-                                                                </div>
-
-                                                                <div className="property-details">
-                                                                    <span className="font-roboto">New Delhi</span>
-                                                                    <a href="/property-details">
-                                                                        <h3>Little Acorn Farm</h3>
-                                                                    </a>
-                                                                    <h6>₹50,000*</h6>
-                                                                    <p className="font-roboto light-font">Real estate is divided into several categories, including residential property, commercial property and industrial property.</p>
-                                                                    <ul>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fdouble-bed.svg?alt=media&token=adce4401-145c-4800-a0f3-6935bfc6578e" className="img-fluid" alt="" />Bed : 4</li>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fbathroom.svg?alt=media&token=2dd2178a-998e-4aa0-ba60-a4ca1dfe65db" className="img-fluid" alt="" />Baths : 4</li>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fsquare-ruler-tool.svg?alt=media&token=8c121dad-da46-4f7f-b8b3-c62fe1ad2a1c" className="img-fluid ruler-tool" alt="" />Sq Ft : 5000</li>
-                                                                    </ul>
-                                                                    <div className="property-btn d-flex">
-                                                                        {/* <span>August 4, 2022</span> */}
-                                                                        <a href="/property-details"><button type="button" className="btn btn-dashed btn-pill color-2">Details</button></a>
-                                                                        <a href="/edit-property"><button type="button" className="btn btn-dashed btn-pill color-2">Edit</button></a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-xl-4 col-md-6 xl-6">
-                                                            <div className="property-box">
-                                                                <div className="property-image">
-                                                                    <div className="property-slider">
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F3.jpg?alt=media&token=9429c4ec-99d2-46c6-be3c-4fc961660a64" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F1.jpg?alt=media&token=b4a15bf4-cccd-4f36-80e1-4baf629953fe" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F4.jpg?alt=media&token=2774369b-8a80-4459-8227-c3c245627c70" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F2.jpg?alt=media&token=02d59161-229e-415a-8e8a-7f6f69aa0b5e" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                    </div>
-                                                                    <div className="labels-left">
-                                                                        <div>
-                                                                            <span className="label label-dark">for rent</span>
+                                                            </div> 
                                                                         </div>
-                                                                        <span className="label label-success">featured</span>
+
+                                                                        <div className="property-details">
+                                                                            <span className="font-roboto">New Delhi</span>
+                                                                            <a href="/property-details">
+                                                                                <h3>Merrick in Spring Way</h3>
+                                                                            </a>
+                                                                            <h6>₹50,000*</h6>
+                                                                            <p className="font-roboto light-font">This home provides wonderful entertaining spaces with a chef
+                                                                                kitchen opening… Elegant retreat in a quiet Coral Gables setting.</p>
+                                                                            <ul>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fdouble-bed.svg?alt=media&token=adce4401-145c-4800-a0f3-6935bfc6578e" className="img-fluid" alt="" />Bed : 4</li>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fbathroom.svg?alt=media&token=2dd2178a-998e-4aa0-ba60-a4ca1dfe65db" className="img-fluid" alt="" />Baths : 4</li>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fsquare-ruler-tool.svg?alt=media&token=8c121dad-da46-4f7f-b8b3-c62fe1ad2a1c" className="img-fluid ruler-tool" alt="" />Sq Ft : 5000</li>
+                                                                            </ul>
+                                                                            <div className="property-btn d-flex">
+                                                                                 <span>August 4, 2022</span> 
+                                                                                <a href="/property-details"><button type="button" className="btn btn-dashed btn-pill color-2">Details</button></a>
+                                                                                <a href="/edit-property"><button type="button" className="btn btn-dashed btn-pill color-2">Edit</button></a>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
-                                                                    <div className="seen-data">
-                                                                        <i data-feather="camera"></i>
-                                                                        <span>06</span>
-                                                                    </div>
-                                                                    {/* <div className="overlay-property-box">
+                                                                </div>
+                                                                <div className="col-xl-4 col-md-6 xl-6">
+                                                                    <div className="property-box">
+                                                                        <div className="property-image">
+                                                                            <div className="property-slider">
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F2.jpg?alt=media&token=02d59161-229e-415a-8e8a-7f6f69aa0b5e" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F4.jpg?alt=media&token=2774369b-8a80-4459-8227-c3c245627c70" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F3.jpg?alt=media&token=9429c4ec-99d2-46c6-be3c-4fc961660a64" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F1.jpg?alt=media&token=b4a15bf4-cccd-4f36-80e1-4baf629953fe" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                            </div>
+                                                                            <div className="labels-left">
+                                                                                <div>
+                                                                                    <span className="label label-shadow">sale</span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className="seen-data">
+                                                                                <i data-feather="camera"></i>
+                                                                                <span>05</span>
+                                                                            </div>
+                                                                             <div className="overlay-property-box">
                                                                 <a href="https://themes.pixelstrap.com/sheltos/main/compare.html" className="effect-round" data-bs-toggle="tooltip" data-bs-placement="left" title="Compare"> 
                                                                     <i data-feather="shuffle"></i>
                                                                 </a>
                                                                 <a href="favourites.html" className="effect-round like" data-bs-toggle="tooltip" data-bs-placement="left" title="wishlist">
                                                                     <i data-feather="heart"></i>                                                                               
                                                                 </a>
-                                                            </div> */}
-                                                                </div>
+                                                            </div> 
+                                                                        </div>
 
-                                                                <div className="property-details">
-                                                                    <span className="font-roboto">New Delhi</span>
-                                                                    <a href="/property-details">
-                                                                        <h3>Merrick in Spring Way</h3>
-                                                                    </a>
-                                                                    <h6>₹50,000*</h6>
-                                                                    <p className="font-roboto light-font">This home provides wonderful entertaining spaces with a chef
-                                                                        kitchen opening… Elegant retreat in a quiet Coral Gables setting.</p>
-                                                                    <ul>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fdouble-bed.svg?alt=media&token=adce4401-145c-4800-a0f3-6935bfc6578e" className="img-fluid" alt="" />Bed : 4</li>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fbathroom.svg?alt=media&token=2dd2178a-998e-4aa0-ba60-a4ca1dfe65db" className="img-fluid" alt="" />Baths : 4</li>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fsquare-ruler-tool.svg?alt=media&token=8c121dad-da46-4f7f-b8b3-c62fe1ad2a1c" className="img-fluid ruler-tool" alt="" />Sq Ft : 5000</li>
-                                                                    </ul>
-                                                                    <div className="property-btn d-flex">
-                                                                        {/* <span>August 4, 2022</span> */}
-                                                                        <a href="/property-details"><button type="button" className="btn btn-dashed btn-pill color-2">Details</button></a>
-                                                                        <a href="/edit-property"><button type="button" className="btn btn-dashed btn-pill color-2">Edit</button></a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-xl-4 col-md-6 xl-6">
-                                                            <div className="property-box">
-                                                                <div className="property-image">
-                                                                    <div className="property-slider">
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F2.jpg?alt=media&token=02d59161-229e-415a-8e8a-7f6f69aa0b5e" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F4.jpg?alt=media&token=2774369b-8a80-4459-8227-c3c245627c70" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F3.jpg?alt=media&token=9429c4ec-99d2-46c6-be3c-4fc961660a64" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F1.jpg?alt=media&token=b4a15bf4-cccd-4f36-80e1-4baf629953fe" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                    </div>
-                                                                    <div className="labels-left">
-                                                                        <div>
-                                                                            <span className="label label-shadow">sale</span>
+                                                                        <div className="property-details">
+                                                                            <span className="font-roboto">New Delhi</span>
+                                                                            <a href="/property-details">
+                                                                                <h3>Allen's Across Way</h3>
+                                                                            </a>
+                                                                            <h6>₹50,000*</h6>
+                                                                            <p className="font-roboto light-font">Elegant retreat in a quiet Coral Gables setting. This home provides wonderful entertaining spaces with a chef
+                                                                                kitchen opening…</p>
+                                                                            <ul>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fdouble-bed.svg?alt=media&token=adce4401-145c-4800-a0f3-6935bfc6578e" className="img-fluid" alt="" />Bed : 4</li>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fbathroom.svg?alt=media&token=2dd2178a-998e-4aa0-ba60-a4ca1dfe65db" className="img-fluid" alt="" />Baths : 4</li>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fsquare-ruler-tool.svg?alt=media&token=8c121dad-da46-4f7f-b8b3-c62fe1ad2a1c" className="img-fluid ruler-tool" alt="" />Sq Ft : 5000</li>
+                                                                            </ul>
+                                                                            <div className="property-btn d-flex">
+                                                                                 <span>August 4, 2022</span> 
+                                                                                <a href="/property-details"><button type="button" className="btn btn-dashed btn-pill color-2">Details</button></a>
+                                                                                <a href="/edit-property"><button type="button" className="btn btn-dashed btn-pill color-2">Edit</button></a>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div className="seen-data">
-                                                                        <i data-feather="camera"></i>
-                                                                        <span>05</span>
-                                                                    </div>
-                                                                    {/* <div className="overlay-property-box">
+                                                                </div>
+                                                                <div className="col-xl-4 col-md-6 xl-6">
+                                                                    <div className="property-box">
+                                                                        <div className="property-image">
+                                                                            <div className="property-slider">
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F7.jpg?alt=media&token=a8cc74d1-2647-4c5a-adb3-a4b3d2f4929f" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F6.jpg?alt=media&token=805779cc-2507-41d6-a067-ef24eae1504d" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F3.jpg?alt=media&token=9429c4ec-99d2-46c6-be3c-4fc961660a64" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F2.jpg?alt=media&token=02d59161-229e-415a-8e8a-7f6f69aa0b5e" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                            </div>
+                                                                            <div className="labels-left">
+                                                                                <div>
+                                                                                    <span className="label label-dark">for rent</span>
+                                                                                </div>
+                                                                                <span className="label label-success">featured</span>
+                                                                            </div>
+                                                                            <div className="seen-data">
+                                                                                <i data-feather="camera"></i>
+                                                                                <span>03</span>
+                                                                            </div>
+                                                                             <div className="overlay-property-box">
                                                                 <a href="https://themes.pixelstrap.com/sheltos/main/compare.html" className="effect-round" data-bs-toggle="tooltip" data-bs-placement="left" title="Compare"> 
                                                                     <i data-feather="shuffle"></i>
                                                                 </a>
                                                                 <a href="favourites.html" className="effect-round like" data-bs-toggle="tooltip" data-bs-placement="left" title="wishlist">
                                                                     <i data-feather="heart"></i>                                                                               
                                                                 </a>
-                                                            </div> */}
-                                                                </div>
-
-                                                                <div className="property-details">
-                                                                    <span className="font-roboto">New Delhi</span>
-                                                                    <a href="/property-details">
-                                                                        <h3>Allen's Across Way</h3>
-                                                                    </a>
-                                                                    <h6>₹50,000*</h6>
-                                                                    <p className="font-roboto light-font">Elegant retreat in a quiet Coral Gables setting. This home provides wonderful entertaining spaces with a chef
-                                                                        kitchen opening…</p>
-                                                                    <ul>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fdouble-bed.svg?alt=media&token=adce4401-145c-4800-a0f3-6935bfc6578e" className="img-fluid" alt="" />Bed : 4</li>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fbathroom.svg?alt=media&token=2dd2178a-998e-4aa0-ba60-a4ca1dfe65db" className="img-fluid" alt="" />Baths : 4</li>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fsquare-ruler-tool.svg?alt=media&token=8c121dad-da46-4f7f-b8b3-c62fe1ad2a1c" className="img-fluid ruler-tool" alt="" />Sq Ft : 5000</li>
-                                                                    </ul>
-                                                                    <div className="property-btn d-flex">
-                                                                        {/* <span>August 4, 2022</span> */}
-                                                                        <a href="/property-details"><button type="button" className="btn btn-dashed btn-pill color-2">Details</button></a>
-                                                                        <a href="/edit-property"><button type="button" className="btn btn-dashed btn-pill color-2">Edit</button></a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-xl-4 col-md-6 xl-6">
-                                                            <div className="property-box">
-                                                                <div className="property-image">
-                                                                    <div className="property-slider">
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F7.jpg?alt=media&token=a8cc74d1-2647-4c5a-adb3-a4b3d2f4929f" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F6.jpg?alt=media&token=805779cc-2507-41d6-a067-ef24eae1504d" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F3.jpg?alt=media&token=9429c4ec-99d2-46c6-be3c-4fc961660a64" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F2.jpg?alt=media&token=02d59161-229e-415a-8e8a-7f6f69aa0b5e" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                    </div>
-                                                                    <div className="labels-left">
-                                                                        <div>
-                                                                            <span className="label label-dark">for rent</span>
+                                                            </div> 
                                                                         </div>
-                                                                        <span className="label label-success">featured</span>
+
+                                                                        <div className="property-details">
+                                                                            <span className="font-roboto">New Delhi</span>
+                                                                            <a href="/property-details">
+                                                                                <h3>Hidden Spring Hideway</h3>
+                                                                            </a>
+                                                                            <h6>₹50,000*</h6>
+                                                                            <p className="font-roboto light-font">The most common and most absolute type of estate, the tenant enjoys the greatest discretion over the disposal of the property.</p>
+                                                                            <ul>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fdouble-bed.svg?alt=media&token=adce4401-145c-4800-a0f3-6935bfc6578e" className="img-fluid" alt="" />Bed : 4</li>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fbathroom.svg?alt=media&token=2dd2178a-998e-4aa0-ba60-a4ca1dfe65db" className="img-fluid" alt="" />Baths : 4</li>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fsquare-ruler-tool.svg?alt=media&token=8c121dad-da46-4f7f-b8b3-c62fe1ad2a1c" className="img-fluid ruler-tool" alt="" />Sq Ft : 5000</li>
+                                                                            </ul>
+                                                                            <div className="property-btn d-flex">
+                                                                                 <span>August 4, 2022</span> 
+                                                                                <a href="/property-details"><button type="button" className="btn btn-dashed btn-pill color-2">Details</button></a>
+                                                                                <a href="/edit-property"><button type="button" className="btn btn-dashed btn-pill color-2">Edit</button></a>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
-                                                                    <div className="seen-data">
-                                                                        <i data-feather="camera"></i>
-                                                                        <span>03</span>
-                                                                    </div>
-                                                                    {/* <div className="overlay-property-box">
+                                                                </div>
+                                                                <div className="col-xl-4 col-md-6 xl-6">
+                                                                    <div className="property-box">
+                                                                        <div className="property-image">
+                                                                            <div className="property-slider">
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F6.jpg?alt=media&token=805779cc-2507-41d6-a067-ef24eae1504d" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F2.jpg?alt=media&token=02d59161-229e-415a-8e8a-7f6f69aa0b5e" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F7.jpg?alt=media&token=a8cc74d1-2647-4c5a-adb3-a4b3d2f4929f" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F1.jpg?alt=media&token=b4a15bf4-cccd-4f36-80e1-4baf629953fe" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                            </div>
+                                                                            <div className="labels-left">
+                                                                                <div>
+                                                                                    <span className="label label-dark">for sale</span>
+                                                                                </div>
+                                                                                <span className="label label-shadow">featured</span>
+                                                                            </div>
+                                                                            <div className="seen-data">
+                                                                                <i data-feather="camera"></i>
+                                                                                <span>04</span>
+                                                                            </div>
+                                                                             <div className="overlay-property-box">
                                                                 <a href="https://themes.pixelstrap.com/sheltos/main/compare.html" className="effect-round" data-bs-toggle="tooltip" data-bs-placement="left" title="Compare"> 
                                                                     <i data-feather="shuffle"></i>
                                                                 </a>
                                                                 <a href="favourites.html" className="effect-round like" data-bs-toggle="tooltip" data-bs-placement="left" title="wishlist">
                                                                     <i data-feather="heart"></i>                                                                               
                                                                 </a>
-                                                            </div> */}
-                                                                </div>
-
-                                                                <div className="property-details">
-                                                                    <span className="font-roboto">New Delhi</span>
-                                                                    <a href="/property-details">
-                                                                        <h3>Hidden Spring Hideway</h3>
-                                                                    </a>
-                                                                    <h6>₹50,000*</h6>
-                                                                    <p className="font-roboto light-font">The most common and most absolute type of estate, the tenant enjoys the greatest discretion over the disposal of the property.</p>
-                                                                    <ul>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fdouble-bed.svg?alt=media&token=adce4401-145c-4800-a0f3-6935bfc6578e" className="img-fluid" alt="" />Bed : 4</li>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fbathroom.svg?alt=media&token=2dd2178a-998e-4aa0-ba60-a4ca1dfe65db" className="img-fluid" alt="" />Baths : 4</li>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fsquare-ruler-tool.svg?alt=media&token=8c121dad-da46-4f7f-b8b3-c62fe1ad2a1c" className="img-fluid ruler-tool" alt="" />Sq Ft : 5000</li>
-                                                                    </ul>
-                                                                    <div className="property-btn d-flex">
-                                                                        {/* <span>August 4, 2022</span> */}
-                                                                        <a href="/property-details"><button type="button" className="btn btn-dashed btn-pill color-2">Details</button></a>
-                                                                        <a href="/edit-property"><button type="button" className="btn btn-dashed btn-pill color-2">Edit</button></a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-xl-4 col-md-6 xl-6">
-                                                            <div className="property-box">
-                                                                <div className="property-image">
-                                                                    <div className="property-slider">
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F6.jpg?alt=media&token=805779cc-2507-41d6-a067-ef24eae1504d" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F2.jpg?alt=media&token=02d59161-229e-415a-8e8a-7f6f69aa0b5e" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F7.jpg?alt=media&token=a8cc74d1-2647-4c5a-adb3-a4b3d2f4929f" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F1.jpg?alt=media&token=b4a15bf4-cccd-4f36-80e1-4baf629953fe" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                    </div>
-                                                                    <div className="labels-left">
-                                                                        <div>
-                                                                            <span className="label label-dark">for sale</span>
+                                                            </div> 
                                                                         </div>
-                                                                        <span className="label label-shadow">featured</span>
+
+                                                                        <div className="property-details">
+                                                                            <span className="font-roboto">New Delhi</span>
+                                                                            <a href="/property-details">
+                                                                                <h3>Home in Merrick Way</h3>
+                                                                            </a>
+                                                                            <h6>₹50,000*</h6>
+                                                                            <p className="font-roboto light-font">Real estate market in most countries are not as organize or efficient as markets for other, more liquid investment instruments.</p>
+                                                                            <ul>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fdouble-bed.svg?alt=media&token=adce4401-145c-4800-a0f3-6935bfc6578e" className="img-fluid" alt="" />Bed : 4</li>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fbathroom.svg?alt=media&token=2dd2178a-998e-4aa0-ba60-a4ca1dfe65db" className="img-fluid" alt="" />Baths : 4</li>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fsquare-ruler-tool.svg?alt=media&token=8c121dad-da46-4f7f-b8b3-c62fe1ad2a1c" className="img-fluid ruler-tool" alt="" />Sq Ft : 5000</li>
+                                                                            </ul>
+                                                                            <div className="property-btn d-flex">
+                                                                                 <span>August 4, 2022</span> 
+                                                                                <a href="/property-details"><button type="button" className="btn btn-dashed btn-pill color-2">Details</button></a>
+                                                                                <a href="/edit-property"><button type="button" className="btn btn-dashed btn-pill color-2">Edit</button></a>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
-                                                                    <div className="seen-data">
-                                                                        <i data-feather="camera"></i>
-                                                                        <span>04</span>
-                                                                    </div>
-                                                                    {/* <div className="overlay-property-box">
+                                                                </div>
+                                                                <div className="col-xl-4 col-md-6 xl-6">
+                                                                    <div className="property-box">
+                                                                        <div className="property-image">
+                                                                            <div className="property-slider">
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F8.jpg?alt=media&token=ce46d99a-79ed-4f88-a37c-45810d3530df" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F6.jpg?alt=media&token=805779cc-2507-41d6-a067-ef24eae1504d" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F7.jpg?alt=media&token=a8cc74d1-2647-4c5a-adb3-a4b3d2f4929f" className="bg-img" alt="" width="600px" height="400px" />
+
+                                                                                </a>
+                                                                                <a href="javascript:void(0)">
+                                                                                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F2.jpg?alt=media&token=02d59161-229e-415a-8e8a-7f6f69aa0b5e" className="bg-img" alt="" width="600px" height="400px" />
+                                                                                </a>
+                                                                            </div>
+                                                                            <div className="labels-left">
+                                                                                <div>
+                                                                                    <span className="label label-dark">for rent</span>
+                                                                                </div>
+                                                                                <span className="label label-success">featured</span>
+                                                                            </div>
+                                                                            <div className="seen-data">
+                                                                                <i data-feather="camera"></i>
+                                                                                <span>07</span>
+                                                                            </div>
+                                                                             <div className="overlay-property-box">
                                                                 <a href="https://themes.pixelstrap.com/sheltos/main/compare.html" className="effect-round" data-bs-toggle="tooltip" data-bs-placement="left" title="Compare"> 
                                                                     <i data-feather="shuffle"></i>
                                                                 </a>
                                                                 <a href="favourites.html" className="effect-round like" data-bs-toggle="tooltip" data-bs-placement="left" title="wishlist">
                                                                     <i data-feather="heart"></i>                                                                               
                                                                 </a>
-                                                            </div> */}
-                                                                </div>
-
-                                                                <div className="property-details">
-                                                                    <span className="font-roboto">New Delhi</span>
-                                                                    <a href="/property-details">
-                                                                        <h3>Home in Merrick Way</h3>
-                                                                    </a>
-                                                                    <h6>₹50,000*</h6>
-                                                                    <p className="font-roboto light-font">Real estate market in most countries are not as organize or efficient as markets for other, more liquid investment instruments.</p>
-                                                                    <ul>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fdouble-bed.svg?alt=media&token=adce4401-145c-4800-a0f3-6935bfc6578e" className="img-fluid" alt="" />Bed : 4</li>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fbathroom.svg?alt=media&token=2dd2178a-998e-4aa0-ba60-a4ca1dfe65db" className="img-fluid" alt="" />Baths : 4</li>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fsquare-ruler-tool.svg?alt=media&token=8c121dad-da46-4f7f-b8b3-c62fe1ad2a1c" className="img-fluid ruler-tool" alt="" />Sq Ft : 5000</li>
-                                                                    </ul>
-                                                                    <div className="property-btn d-flex">
-                                                                        {/* <span>August 4, 2022</span> */}
-                                                                        <a href="/property-details"><button type="button" className="btn btn-dashed btn-pill color-2">Details</button></a>
-                                                                        <a href="/edit-property"><button type="button" className="btn btn-dashed btn-pill color-2">Edit</button></a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-xl-4 col-md-6 xl-6">
-                                                            <div className="property-box">
-                                                                <div className="property-image">
-                                                                    <div className="property-slider">
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F8.jpg?alt=media&token=ce46d99a-79ed-4f88-a37c-45810d3530df" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F6.jpg?alt=media&token=805779cc-2507-41d6-a067-ef24eae1504d" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F7.jpg?alt=media&token=a8cc74d1-2647-4c5a-adb3-a4b3d2f4929f" className="bg-img" alt="" width="600px" height="400px" />
-
-                                                                        </a>
-                                                                        <a href="javascript:void(0)">
-                                                                            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F2.jpg?alt=media&token=02d59161-229e-415a-8e8a-7f6f69aa0b5e" className="bg-img" alt="" width="600px" height="400px" />
-                                                                        </a>
-                                                                    </div>
-                                                                    <div className="labels-left">
-                                                                        <div>
-                                                                            <span className="label label-dark">for rent</span>
+                                                            </div> 
                                                                         </div>
-                                                                        <span className="label label-success">featured</span>
-                                                                    </div>
-                                                                    <div className="seen-data">
-                                                                        <i data-feather="camera"></i>
-                                                                        <span>07</span>
-                                                                    </div>
-                                                                    {/* <div className="overlay-property-box">
-                                                                <a href="https://themes.pixelstrap.com/sheltos/main/compare.html" className="effect-round" data-bs-toggle="tooltip" data-bs-placement="left" title="Compare"> 
-                                                                    <i data-feather="shuffle"></i>
-                                                                </a>
-                                                                <a href="favourites.html" className="effect-round like" data-bs-toggle="tooltip" data-bs-placement="left" title="wishlist">
-                                                                    <i data-feather="heart"></i>                                                                               
-                                                                </a>
-                                                            </div> */}
-                                                                </div>
 
-                                                                <div className="property-details">
-                                                                    <span className="font-roboto">New Delhi</span>
-                                                                    <a href="/property-details">
-                                                                        <h3>Magnolia Ranch</h3>
-                                                                    </a>
-                                                                    <h6>₹50,000*</h6>
-                                                                    <p className="font-roboto light-font">An interior designer is someone who plans,researches, management and manages such enhancement projects.</p>
-                                                                    <ul>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fdouble-bed.svg?alt=media&token=adce4401-145c-4800-a0f3-6935bfc6578e" className="img-fluid" alt="" />Bed : 4</li>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fbathroom.svg?alt=media&token=2dd2178a-998e-4aa0-ba60-a4ca1dfe65db" className="img-fluid" alt="" />Baths : 4</li>
-                                                                        <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fsquare-ruler-tool.svg?alt=media&token=8c121dad-da46-4f7f-b8b3-c62fe1ad2a1c" className="img-fluid ruler-tool" alt="" />Sq Ft : 5000</li>
-                                                                    </ul>
-                                                                    <div className="property-btn d-flex">
-                                                                        {/* <span>August 4, 2022</span> */}
-                                                                        <a href="/property-details"><button type="button" className="btn btn-dashed btn-pill color-2">Details</button></a>
-                                                                        <a href="/edit-property"><button type="button" className="btn btn-dashed btn-pill color-2">Edit</button></a>
+                                                                        <div className="property-details">
+                                                                            <span className="font-roboto">New Delhi</span>
+                                                                            <a href="/property-details">
+                                                                                <h3>Magnolia Ranch</h3>
+                                                                            </a>
+                                                                            <h6>₹50,000*</h6>
+                                                                            <p className="font-roboto light-font">An interior designer is someone who plans,researches, management and manages such enhancement projects.</p>
+                                                                            <ul>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fdouble-bed.svg?alt=media&token=adce4401-145c-4800-a0f3-6935bfc6578e" className="img-fluid" alt="" />Bed : 4</li>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fbathroom.svg?alt=media&token=2dd2178a-998e-4aa0-ba60-a4ca1dfe65db" className="img-fluid" alt="" />Baths : 4</li>
+                                                                                <li><img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fsquare-ruler-tool.svg?alt=media&token=8c121dad-da46-4f7f-b8b3-c62fe1ad2a1c" className="img-fluid ruler-tool" alt="" />Sq Ft : 5000</li>
+                                                                            </ul>
+                                                                            <div className="property-btn d-flex">
+                                                                                 <span>August 4, 2022</span> 
+                                                                                <a href="/property-details"><button type="button" className="btn btn-dashed btn-pill color-2">Details</button></a>
+                                                                                <a href="/edit-property"><button type="button" className="btn btn-dashed btn-pill color-2">Edit</button></a>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                                </div> */}
                                                     </div>
+
                                                     <nav className="theme-pagination">
                                                         <ul className="pagination">
                                                             <li className="page-item">

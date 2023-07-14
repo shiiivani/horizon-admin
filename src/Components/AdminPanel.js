@@ -1,9 +1,212 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { Airplay, Bell, ChevronsLeft, Grid, Layout, Mail, Maximize, Save, Search, Settings } from 'react-feather'
 import logoDark from "../assets/logo-dark.png"
 import logoLight from "../assets/logo-light.png"
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.css';
+import { db } from "../FirebaseAuth/firebase"
+import { collection, addDoc } from "firebase/firestore";
+import { storage } from "../FirebaseAuth/firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { signOut } from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
+import { auth } from "../FirebaseAuth/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import "../styles/AdminPanel.css"
+
 
 function AdminPanel() {
+  const [details, setDetails] = useState({
+    additionalFeatures: [],
+    address: "",
+    agencies: "",
+    area: "",
+    beds: "",
+    baths: "",
+    maxRooms: "",
+    city: "",
+    country: "",
+    description: "",
+    landmark: "",
+    pincode: "",
+    price: "",
+    propertyPrice: "",
+    propertyStatus: "",
+    propertyType: "",
+  })
+  const [err, setErr] = useState(false);
+  const [floorUrl, setFloorUrl] = useState("");
+  const [url, setUrl] = useState([]);
+  const [propertyImage, setPropertyImage] = useState("");
+  const [floorPlanImage, setFloorPlanImage] = useState("");
+const navigate = useNavigate();
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            navigate("/admin-panel")
+          } else {
+            navigate("/login")
+          }
+        });
+      }, []);
+
+  const onChangeHandler = (event) => {
+    if (event.target.name === "additionalFeatures") {
+      let copy = { ...details }
+      let additionalFeatures = [];
+      if (event.target.checked) {
+        copy.additionalFeatures.push(event.target.value)
+      } else {
+        copy.additionalFeatures = copy.additionalFeatures.filter(el => !el === event.target.value)
+      }
+      setDetails(copy)
+    } else {
+      setDetails(() => ({
+        ...details,
+        [event.target.name]: event.target.value
+      }))
+    }
+  };
+
+  // const uploadProperty = (e) => {
+  //   e.preventDefault();
+  //   const storageRef = ref(storage, `/propertyImages/${propertyImage.name}`);
+  //   const uploadTask = uploadBytesResumable(storageRef, propertyImage)
+  //   uploadTask.on('state_changed', (snapshot) => {
+  //     const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+  //     console.log('Upload is ' + progress + '% done');
+  //   },
+  //     (error) => console.log(error),
+  //     () => {
+  //       getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+  //         setUrl(url);
+  //       })
+  //     }
+  //   )
+  // };
+
+  // const uploadFloorPlan = (e) => {
+  //   e.preventDefault();
+  //   const storageRef = ref(storage, `/propertyImages/${floorPlanImage.name}`);
+  //   const uploadTask = uploadBytesResumable(storageRef, floorPlanImage)
+  //   uploadTask.on('state_changed', (snapshot) => {
+  //     const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+  //     console.log('Upload is ' + progress + '% done');
+  //   },
+  //     (error) => console.log(error),
+  //     () => {
+  //       getDownloadURL(uploadTask.snapshot.ref).then((floorUrl) => {
+  //         setFloorUrl(floorUrl);
+  //       })
+  //     }
+  //   )
+  // };
+
+  // const uploadProperty = async(event) => {
+  //   try {
+  //     event.preventDefault();
+
+  //     const storageRef = ref(storage, `/propertyImages/${propertyImage.name}`);
+  //     const uploadTask = uploadBytesResumable(storageRef, propertyImage);
+
+  //     uploadTask.on('state_changed', (snapshot) => {
+  //       // progrss function ....
+  //       const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+  //       console.log('Upload is ' + progress + '% done');
+  //     }, 
+  //     (error) => { 
+  //       // error function ....
+  //       console.log(error);
+  //     }, 
+  //     () => {
+  //       // complete function ....
+  //       getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+  //         console.log('File available at', url);
+  //         addDoc(collection(db, "propertyDetails"),{
+  //           additionalFeatures: details.additionalFeatures,
+  //           address: details.address,
+  //          
+
+
+
+  const urlarray = [];
+
+   const uploadProperty = async () => {
+    for (let i = 0; i < propertyImage.length; i++) {
+      const imageRef = ref(storage, `/propertyImages/${propertyImage[i].name}`);
+      await uploadBytes(imageRef, propertyImage[i])
+      const url = await getDownloadURL(imageRef) 
+        urlarray.push(url);
+        console.log(urlarray)
+        // setButtonDisabled(false);  
+    }
+    return urlarray;
+  };
+
+  const floorurlarray =[]
+
+   const uploadFloorPlan = async () => {
+    for (let i = 0; i < floorPlanImage.length; i++) {
+      const floorRef = ref(storage, `/propertyImages/${floorPlanImage[i].name}`);
+      const result = await uploadBytes(floorRef, floorPlanImage[i])
+      const url = await getDownloadURL(floorRef)
+        floorurlarray.push(url)
+        console.log(floorurlarray)
+        // setButtonDisabled(false);
+    }
+    return floorurlarray;
+  };
+
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      await uploadProperty();
+      await uploadFloorPlan();
+      const docref = await addDoc(collection(db, "propertyDetails"), {
+        additionalFeatures: details.additionalFeatures,
+        address: details.address,
+        agencies: details.agencies,
+        area: details.area,
+        balcony: details.balcony,
+        baths: details.baths,
+        beds: details.beds,
+        city: details.city,
+        country: details.country,
+        description: details.description,
+        floorurlarray,
+        garage: details.garage,
+        halls: details.halls,
+        landmark: details.landmark,
+        maxRooms: details.maxRooms,
+        pincode: details.pincode,
+        price: details.price,
+        propertyPrice: details.propertyPrice,
+        propertyStatus: details.propertyStatus,
+        propertyType: details.propertyType,
+        urlarray,
+      });
+      console.log("Document written with ID: ", docref.id);
+      setErr("Details sent Successfully");
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  }
+
+  const logOut = () => {
+    signOut(auth)
+      .then(() => {
+        console.log("User Signed Out");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    navigate("/login");
+  };
+
+
+
   return (
     <div>
 
@@ -263,7 +466,7 @@ function AdminPanel() {
                 <ul className="profile-dropdown onhover-show-div">
                   <li><a href="user-profile.html"><span>Account </span><i data-feather="user"></i></a></li>
                   <li><a href="listing.html"><span>Listing</span><i data-feather="file-text"></i></a></li>
-                  <li><a href="login.html"><span>Log in</span><i data-feather="log-in"></i></a></li>
+                  <li onClick={logOut}><a href=""><span>Log Out</span><i data-feather="log-in"></i></a></li>
                 </ul>
               </li>
             </ul>
@@ -554,26 +757,33 @@ function AdminPanel() {
                       <h5>Add property details</h5>
                     </div>
                     <div className="card-body admin-form">
-                      <form className="row gx-3">
+                      <form className="row gx-3" onSubmit={e => e.preventDefault()}>
                         <div className="form-group col-sm-4">
                           <label>Property Type</label>
-                          <input type="text" className="form-control" placeholder="office,villa,apartment" required="" />
+                          <input type="text" className="form-control" placeholder="office,villa,apartment" name="propertyType" value={details.propertyType} onChange={onChangeHandler} required="" />
                         </div>
-                        <div className="form-group col-sm-4">
+                        {/* <div className="form-group col-sm-4">
                           <label>Property Status</label>
                           <div className="dropdown">
                             <span className="dropdown-toggle font-rubik" data-bs-toggle="dropdown"><span>For Sale</span> <i className="fas fa-angle-down"></i></span>
-                            <div className="dropdown-menu text-start">
-                              <a className="dropdown-item" href="javascript:void(0)">For Rent</a>
-                              <a className="dropdown-item" href="javascript:void(0)">For Sale</a>
+                            <div className="dropdown-menu text-start" name="propertyStatus" onChange={e => console.log(e.target.value)}>
+                              <a className="dropdown-item" href="javascript:void(0)" name="rent" value={propertyDetails.propertyStatus}>For Rent</a>
+                              <a className="dropdown-item" href="javascript:void(0)" name="sale" value={propertyDetails.propertyStatus}>For Sale</a>
                             </div>
                           </div>
+                        </div> */}
+                        <div className="form-group col-sm-4">
+                          <label >Property Status</label>
+                          <select className="form-control" name="propertyStatus" onChange={onChangeHandler}>
+                            <option  value={details.rent}>For Rent</option>
+                            <option value={details.sale}>For Sale</option>
+                          </select>
                         </div>
                         <div className="form-group col-sm-4">
                           <label>Property Price</label>
-                          <input type="text" className="form-control" placeholder="₹2800" required="" />
+                          <input type="text" className="form-control" placeholder="₹2800" name="propertyPrice" value={details.propertyPrice} onChange={onChangeHandler} required="" />
                         </div>
-                        <div className="form-group col-sm-4">
+                        {/* <div className="form-group col-sm-4">
                           <label>Max Rooms</label>
                           <div className="dropdown">
                             <span className="dropdown-toggle font-rubik" data-bs-toggle="dropdown"><span>1</span> <i className="fas fa-angle-down"></i></span>
@@ -585,8 +795,30 @@ function AdminPanel() {
                               <a className="dropdown-item" href="javascript:void(0)">6</a>
                             </div>
                           </div>
+                        </div> */}
+                        <div className="form-group col-sm-4">
+                          <label >Max Rooms</label>
+                          <select className="form-control" name="maxRooms" onChange={onChangeHandler}>
+                            <option  value={details.one}>1</option>
+                            <option value={details.two}>2</option>
+                            <option value={details.three}>3</option>
+                            <option value={details.four}>4</option>
+                            <option value={details.five}>5</option>
+                            <option value={details.six}>6</option>
+                          </select>
                         </div>
                         <div className="form-group col-sm-4">
+                          <label >Halls</label>
+                          <select className="form-control" name="halls" onChange={onChangeHandler}>
+                            <option  value={details.one}>1</option>
+                            <option value={details.two}>2</option>
+                            <option value={details.three}>3</option>
+                            <option value={details.four}>4</option>
+                            <option value={details.five}>5</option>
+                            <option value={details.six}>6</option>
+                          </select>
+                        </div>
+                        {/* <div className="form-group col-sm-4">
                           <label>Beds</label>
                           <div className="dropdown">
                             <span className="dropdown-toggle font-rubik" data-bs-toggle="dropdown"><span>1</span> <i className="fas fa-angle-down"></i></span>
@@ -598,8 +830,19 @@ function AdminPanel() {
                               <a className="dropdown-item" href="javascript:void(0)">6</a>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                         <div className="form-group col-sm-4">
+                          <label >Beds</label>
+                          <select className="form-control" name="beds" onChange={onChangeHandler}>
+                            <option  value={details.one}>1</option>
+                            <option value={details.two}>2</option>
+                            <option value={details.three}>3</option>
+                            <option value={details.four}>4</option>
+                            <option value={details.five}>5</option>
+                            <option value={details.six}>6</option>
+                          </select>
+                        </div>
+                        {/* <div className="form-group col-sm-4">
                           <label>Baths</label>
                           <div className="dropdown">
                             <span className="dropdown-toggle font-rubik" data-bs-toggle="dropdown"><span>1</span> <i className="fas fa-angle-down"></i></span>
@@ -611,16 +854,49 @@ function AdminPanel() {
                               <a className="dropdown-item" href="javascript:void(0)">6</a>
                             </div>
                           </div>
+                        </div> */}
+                        <div className="form-group col-sm-4">
+                          <label >Baths</label>
+                          <select className="form-control" name="baths" onChange={onChangeHandler}>
+                            <option  value={details.one}>1</option>
+                            <option value={details.two}>2</option>
+                            <option value={details.three}>3</option>
+                            <option value={details.four}>4</option>
+                            <option value={details.five}>5</option>
+                            <option value={details.six}>6</option>
+                          </select>
+                        </div>
+                        <div className="form-group col-sm-4">
+                          <label >Garage</label>
+                          <select className="form-control" name="garage" onChange={onChangeHandler}>
+                            <option  value={details.one}>1</option>
+                            <option value={details.two}>2</option>
+                            <option value={details.three}>3</option>
+                            <option value={details.four}>4</option>
+                            <option value={details.five}>5</option>
+                            <option value={details.six}>6</option>
+                          </select>
+                        </div>
+                        <div className="form-group col-sm-4">
+                          <label >Balcony</label>
+                          <select className="form-control" name="balcony" onChange={onChangeHandler}>
+                            <option value={details.one}>1</option>
+                            <option value={details.two}>2</option>
+                            <option value={details.three}>3</option>
+                            <option value={details.four}>4</option>
+                            <option value={details.five}>5</option>
+                            <option value={details.six}>6</option>
+                          </select>
                         </div>
                         <div className="form-group col-sm-4">
                           <label>Area</label>
-                          <input type="text" className="form-control" placeholder="85 sq ft" />
+                          <input type="text" className="form-control" name="area" value={details.area} onChange={onChangeHandler} placeholder="85 sq ft" />
                         </div>
                         <div className="form-group col-sm-4">
                           <label>Price</label>
-                          <input type="text" className="form-control" placeholder="₹3000" />
+                          <input type="text" className="form-control" name="price" value={details.price} onChange={onChangeHandler} placeholder="₹3000" />
                         </div>
-                        <div className="form-group col-sm-4">
+                        {/* <div className="form-group col-sm-4">
                           <label>Agencies</label>
                           <div className="dropdown">
                             <span className="dropdown-toggle font-rubik"
@@ -632,20 +908,28 @@ function AdminPanel() {
                               <a className="dropdown-item" href="javascript:void(0)">Premiere</a>
                             </div>
                           </div>
+                        </div> */}
+                        <div className="form-group col-sm-4">
+                          <label >Agencies</label>
+                          <select className="form-control" name="agencies" onChange={onChangeHandler}>
+                            <option value={details.blueSky}>Blue Sky</option>
+                            <option value={details.zephyr}>Zephyr</option>
+                            <option value={details.premiere}>Premiere</option>
+                          </select>
                         </div>
                         <div className="form-group col-sm-12">
                           <label>Description</label>
-                          <textarea className="form-control" rows="4"></textarea>
+                          <textarea className="form-control" name="description" value={details.description} onChange={onChangeHandler} rows="4"></textarea>
                         </div>
                         <div className="form-group col-sm-6">
                           <label>Address</label>
-                          <input type="text" className="form-control" placeholder="Address of your property" />
+                          <input type="text" className="form-control" name="address" value={details.address} onChange={onChangeHandler} placeholder="Address of your property" />
                         </div>
                         <div className="form-group col-sm-6">
                           <label>Zip code</label>
-                          <input type="text" className="form-control" placeholder="39702" />
+                          <input type="number" className="form-control" name="pincode" value={details.pincode} onChange={onChangeHandler} placeholder="39702" />
                         </div>
-                        <div className="form-group col-sm-4">
+                        {/* <div className="form-group col-sm-4">
                           <label>Any Country</label>
                           <div className="dropdown">
                             <span className="dropdown-toggle font-rubik" data-bs-toggle="dropdown"><span>Austria</span> <i className="fas fa-angle-down"></i></span>
@@ -655,9 +939,18 @@ function AdminPanel() {
                               <a className="dropdown-item" href="javascript:void(0)">New york</a>
                               <a className="dropdown-item" href="javascript:void(0)">USA</a>
                             </div>
-                          </div>
-                        </div>
+                          </div> 
+                        </div>*/}
                         <div className="form-group col-sm-4">
+                          <label >Country</label>
+                          <select className="form-control" name="country" onChange={onChangeHandler}>
+                            <option  value={details.india}>India</option>
+                            <option value={details.brazil}>Brazil</option>
+                            <option value={details.usa}>USA</option>
+                            <option value={details.austria}>Austria</option>
+                          </select>
+                        </div>
+                        {/* <div className="form-group col-sm-4">
                           <label>Any City</label>
                           <div className="dropdown">
                             <span className="dropdown-toggle font-rubik" data-bs-toggle="dropdown"><span>Amreli</span> <i className="fas fa-angle-down"></i></span>
@@ -668,19 +961,71 @@ function AdminPanel() {
                               <a className="dropdown-item" href="javascript:void(0)">Ahmadabad</a>
                             </div>
                           </div>
+                        </div> */}
+                        <div className="form-group col-sm-4">
+                          <label >City</label>
+                          <select className="form-control" name="city" onChange={onChangeHandler}>
+                            <option  value={details.bangalore}>Bangalore</option>
+                            <option value={details.newDelhi}>New Delhi</option>
+                            <option value={details.lucknow}>Luknow</option>
+                            <option value={details.mumbai}>Mumbai</option>
+                          </select>
                         </div>
                         <div className="form-group col-sm-4">
                           <label>Landmark</label>
-                          <input type="text" className="form-control" placeholder="landmark place name" />
+                          <input type="text" className="form-control" name="landmark" value={details.landmark} onChange={onChangeHandler} placeholder="landmark place name" />
                         </div>
                       </form>
                       <div className="dropzone-admin">
-                        <label>Media</label>
-                        <form className="dropzone" id="multiFileUpload" action="https://themes.pixelstrap.com/upload.php">
+                        <label>Property Images</label>
+                        <form className="dropzone" id="multiFileUpload" style={{ position: "relative" }}
+                          onChange={(event) => {
+                            setPropertyImage(event.target.files);
+                          }}>
+                          <input
+                            type="file"
+                            multiple
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              position: "absolute",
+                              zIndex: "0",
+                              cursor: "pointer",
+                              opacity: "0",
+                            }}
+                          />
+
                           <div className="dz-message needsclick"><i className="fas fa-cloud-upload-alt"></i>
-                            <h6>Drop files here or click to upload.</h6>
+                            <h6>Click to choose file</h6>
                           </div>
                         </form>
+
+                      </div>
+                      <div className="dropzone-admin">
+                        <label>Floorplan</label>
+                        <form className="dropzone" id="multiFileUpload" style={{ position: "relative" }}
+                          onChange={(event) => {
+                            setFloorPlanImage(event.target.files);
+                          }}>
+
+                          <input
+                            type="file"
+                            multiple
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              position: "absolute",
+                              zIndex: "0",
+                              cursor: "pointer",
+                              opacity: "0",
+                            }}
+                          />
+                          <div className="dz-message needsclick"><i className="fas fa-cloud-upload-alt"></i>
+                            <h6>Click to choose file</h6>
+                          </div>
+
+                        </form>
+
                       </div>
                       <form className="row gx-3">
                         {/* <div className="form-group col-sm-12">
@@ -691,40 +1036,40 @@ function AdminPanel() {
                           <label>Additional features</label>
                           <div className="additional-checkbox">
                             <label for="chk-ani">
-                              <input className="checkbox_animated color-4" id="chk-ani" type="checkbox" /> Emergency Exit
+                              <input className="checkbox_animated color-4" id="chk-ani" type="checkbox" name="additionalFeatures" value="Emergency Exit" onChange={onChangeHandler} /> Emergency Exit
                             </label>
                             <label for="chk-ani1">
-                              <input className="checkbox_animated color-4" id="chk-ani1" type="checkbox" /> CCTV
+                              <input className="checkbox_animated color-4" id="chk-ani1" type="checkbox" name="additionalFeatures" value="CCTV" onChange={onChangeHandler} /> CCTV
                             </label>
                             <label for="chk-ani2">
-                              <input className="checkbox_animated color-4" id="chk-ani2" type="checkbox" checked /> Free Wi-Fi
+                              <input className="checkbox_animated color-4" id="chk-ani2" type="checkbox" name="additionalFeatures" value="Free Wi-fi" onChange={onChangeHandler} /> Free Wi-Fi
                             </label>
                             <label for="chk-ani3">
-                              <input className="checkbox_animated color-4" id="chk-ani3" type="checkbox" />  Free Parking In The Area
+                              <input className="checkbox_animated color-4" id="chk-ani3" type="checkbox" name="additionalFeatures" value="Free parking" onChange={onChangeHandler} />  Free Parking In The Area
                             </label>
                             <label for="chk-ani4">
-                              <input className="checkbox_animated color-4" id="chk-ani4" type="checkbox" />  Air Conditioning
+                              <input className="checkbox_animated color-4" id="chk-ani4" type="checkbox" name="additionalFeatures" value="Air Conditioning" onChange={onChangeHandler} />  Air Conditioning
                             </label>
                             <label for="chk-ani5">
-                              <input className="checkbox_animated color-4" id="chk-ani5" type="checkbox" />  Security Guard
+                              <input className="checkbox_animated color-4" id="chk-ani5" type="checkbox" name="additionalFeatures" value="Security Guard" onChange={onChangeHandler} />  Security Guard
                             </label>
                             <label for="chk-ani6">
-                              <input className="checkbox_animated color-4" id="chk-ani6" type="checkbox" checked />  Terrace
+                              <input className="checkbox_animated color-4" id="chk-ani6" type="checkbox" name="additionalFeatures" value="Terrace" onChange={onChangeHandler} />  Terrace
                             </label>
                             <label for="chk-ani7">
-                              <input className="checkbox_animated color-4" id="chk-ani7" type="checkbox" />  Laundry Service
+                              <input className="checkbox_animated color-4" id="chk-ani7" type="checkbox" name="additionalFeatures" value="Laundry Service" onChange={onChangeHandler} />  Laundry Service
                             </label>
                             <label for="chk-ani8">
-                              <input className="checkbox_animated color-4" id="chk-ani8" type="checkbox" />  Elevator Lift
+                              <input className="checkbox_animated color-4" id="chk-ani8" type="checkbox" name="additionalFeatures" value="Elevator Lift" onChange={onChangeHandler} />  Elevator Lift
                             </label>
                             <label for="chk-ani9">
-                              <input className="checkbox_animated color-4" id="chk-ani9" type="checkbox" checked />  Balcony
+                              <input className="checkbox_animated color-4" id="chk-ani9" type="checkbox" name="additionalFeatures" value="Balcony" onChange={onChangeHandler} />  Balcony
                             </label>
                           </div>
                         </div>
                         <div className="form-btn col-sm-12">
-                          <button type="button" className="btn btn-pill btn-gradient color-4">Submit</button>
-                          <button type="button" className="btn btn-pill btn-dashed color-4">Cancel</button>
+                          {/* <button type="button" className="btn btn-pill btn-gradient color-4 " style={{ width: "100px" }} onClick={() => {uploadFloorPlan(); uploadProperty();}}>Upload</button> */}
+                          <button type="submit" className="btn btn-pill btn-gradient color-4 " style={{ width: "150px"}} onClick={submitHandler}>Submit</button>
                         </div>
                       </form>
                     </div>
@@ -813,7 +1158,7 @@ function AdminPanel() {
       </div> */}
       {/* <!-- customizer end --> */}
 
-    </div>
+    </div >
   )
 }
 

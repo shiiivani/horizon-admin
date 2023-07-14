@@ -1,16 +1,68 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import "../styles/PropertyDetails.css"
+import { getDoc, doc } from "firebase/firestore";
+import { db } from "../FirebaseAuth/firebase";
+import { useParams } from "react-router-dom";
+import { auth } from "../FirebaseAuth/firebase";
+import { useNavigate } from 'react-router-dom';
+import { onAuthStateChanged } from "firebase/auth";
 
 function PropertyDetails() {
+    const [propertyDetails, setPropertyDetails] = useState({});
+    const { id } = useParams();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                navigate(`/property-details/${id}`)
+            } else {
+                navigate("/login")
+            }
+        });
+    }, []);
+
+    useEffect(() => {
+        const docRef = doc(db, `propertyDetails/${id}`);
+        getDoc(docRef)
+            .then((doc) => {
+                console.log(doc.data(), id)
+                setPropertyDetails({ ...doc.data() })
+            })
+        // const docSnap = await getDoc(docRef);
+
+        // if (docSnap) {
+        //     setPropertyDetails(docSnap.data())
+        //     console.log("Document data:", docSnap.data());
+        // } else {
+        //     // docSnap.data() will be undefined in this case
+        //     console.log("No such document!");
+        // }
+
+        console.log("data", propertyDetails)
+    }, [id])
     return (
         <div>
             {/* <!-- breadcrumb start --> */}
             <section className="ratio_40 breadcrumb-section p-0 single-property-images">
                 <div className="main-property-slider arrow-image">
+                    {/* <div>
+                        <div>
+                            <img
+                                src={propertyDetails.urlarray?.[0]}
+                                className="bg-img"
+                                alt=""
+                                width="1450px"
+                                height="700px"
+                            />
+
+                        </div>
+                    </div>
                     <div>
                         <div>
                             <img
-                                src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F4.jpg?alt=media&token=2774369b-8a80-4459-8227-c3c245627c70"
+                                src={propertyDetails.urlarray?.[1]}
+
                                 className="bg-img"
                                 alt=""
                                 width="1450px"
@@ -21,35 +73,54 @@ function PropertyDetails() {
                     <div>
                         <div>
                             <img
-                                src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F2.jpg?alt=media&token=02d59161-229e-415a-8e8a-7f6f69aa0b5e"
+                                src={propertyDetails.urlarray?.[2]}
                                 className="bg-img"
                                 alt=""
                                 width="1450px"
                                 height="700px"
                             />
                         </div>
-                    </div>
-                    <div>
-                        <div>
-                            <img
-                                src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F4.jpg?alt=media&token=2774369b-8a80-4459-8227-c3c245627c70"
-                                className="bg-img"
-                                alt=""
-                                width="1450px"
-                                height="700px"
-                            />
+                    </div> */}
+                    <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
+                        <ol className="carousel-indicators">
+                            <li data-target="#carouselExampleIndicators" data-slide-to="0" className="active"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                        </ol>
+                        <div className="carousel-inner">
+                            <div className="carousel-item active">
+                                <img className="d-block w-100" src={propertyDetails.urlarray?.[0]} alt="First slide" width="1450px"
+                                    height="700px" />
+                            </div>
+                            <div className="carousel-item">
+                                <img className="d-block w-100" src={propertyDetails.urlarray?.[1]} alt="Second slide" width="1450px"
+                                    height="700px" />
+                            </div>
+                            {propertyDetails.urlarray?.[2] ? <div className="carousel-item">
+                                <img className="d-block w-100" src={propertyDetails.urlarray?.[2]} alt="Third slide" width="1450px"
+                                    height="700px" />
+                            </div> : ""}
+                            {propertyDetails.urlarray?.[3] ? <div className="carousel-item">
+                                <img className="d-block w-100" src={propertyDetails.urlarray?.[3]} alt="Third slide" width="1450px"
+                                    height="700px" />
+                            </div> : ""}
+                            {propertyDetails.urlarray?.[4] ? <div className="carousel-item">
+                                <img className="d-block w-100" src={propertyDetails.urlarray?.[4]} alt="Fourth slide" width="1450px"
+                                    height="700px" />
+                            </div> : ""}
+                            {propertyDetails.urlarray?.[5] ? <div className="carousel-item">
+                                <img className="d-block w-100" src={propertyDetails.urlarray?.[5]} alt="Fourth slide" width="1450px"
+                                    height="700px" />
+                            </div> : ""}
                         </div>
-                    </div>
-                    <div>
-                        <div>
-                            <img
-                                src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F5.jpg?alt=media&token=5b06a685-0f1c-467f-88c2-100ed2421524"
-                                className="bg-img"
-                                alt=""
-                                width="1450px"
-                                height="700px"
-                            />
-                        </div>
+                        <a className="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span className="sr-only">Previous</span>
+                        </a>
+                        <a className="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                            <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span className="sr-only">Next</span>
+                        </a>
                     </div>
                 </div>
                 <div className="single-property-section">
@@ -57,12 +128,12 @@ function PropertyDetails() {
                         <div className="single-title">
                             <div className="left-single">
                                 <div className="d-flex">
-                                    <h2 className="mb-0">Orchard House </h2>
+                                    <h2 className="mb-0">{propertyDetails.propertyType}</h2>
                                     <span>
-                                        <span className="label label-shadow ms-2">For Sale</span>
+                                        <span className="label label-shadow ms-2">{propertyDetails.propertyStatus}</span>
                                     </span>
                                 </div>
-                                <p className="mt-2">Sarjapur Road, Bengaluru, Karnataka</p>
+                                <p className="mt-2">{propertyDetails.address}, {propertyDetails.landmark}, {propertyDetails.city}, {propertyDetails.country}</p>
                                 <ul>
                                     <li>
                                         <div>
@@ -71,7 +142,7 @@ function PropertyDetails() {
                                                 className="img-fluid"
                                                 alt=""
                                             />
-                                            <span>4 Bedrooms</span>
+                                            <span> {propertyDetails.beds} Beds</span>
                                         </div>
                                     </li>
                                     <li>
@@ -81,7 +152,7 @@ function PropertyDetails() {
                                                 className="img-fluid"
                                                 alt=""
                                             />
-                                            <span>4 Bathrooms</span>
+                                            <span> {propertyDetails.baths} Baths</span>
                                         </div>
                                     </li>
                                     <li>
@@ -91,7 +162,7 @@ function PropertyDetails() {
                                                 className="img-fluid"
                                                 alt=""
                                             />
-                                            <span>2 Halls</span>
+                                            <span> {propertyDetails.halls} Halls</span>
                                         </div>
                                     </li>
                                     <li>
@@ -101,7 +172,7 @@ function PropertyDetails() {
                                                 className="img-fluid ruler-tool"
                                                 alt=""
                                             />
-                                            <span>5000 Sq ft</span>
+                                            <span>{propertyDetails.area} Area</span>
                                         </div>
                                     </li>
                                     <li>
@@ -111,7 +182,7 @@ function PropertyDetails() {
                                                 className="img-fluid"
                                                 alt=""
                                             />
-                                            <span>1 Garage</span>
+                                            <span>{propertyDetails.garage} Garage</span>
                                         </div>
                                     </li>
                                 </ul>
@@ -167,7 +238,7 @@ function PropertyDetails() {
                                     </a>
                                 </div>
                             </div>
-                            <div className="right-single">
+                            <div className="right-single" width="20px">
                                 <div className="rating">
                                     <i className="fas fa-star"></i>
                                     <i className="fas fa-star"></i>
@@ -176,13 +247,18 @@ function PropertyDetails() {
                                     <i className="far fa-star"></i>
                                 </div>
                                 <h2 className="price">
-                                    ₹50,000 <span>/ start From</span>
+                                    ₹{propertyDetails.price}<span>/ start From</span>
                                 </h2>
-                                <div className="feature-label">
-                                    <span className="btn btn-dashed color-2 btn-pill">Wi-fi</span>
-                                    <span className="btn btn-dashed color-2 ms-1 btn-pill">
+                                <div className="feature-label" style={{ display: "grid", gridTemplateColumns: "auto auto auto auto auto" }}>
+                                    {propertyDetails.additionalFeatures?.map((features) => {
+                                        return (
+                                            <span className="btn btn-dashed color-2 btn-pill" >{features}</span>
+                                        )
+                                    })}
+
+                                    {/* <span className="btn btn-dashed color-2 ms-1 btn-pill">
                                         Swimming Pool
-                                    </span>
+                                    </span> */}
                                 </div>
                             </div>
                         </div>
@@ -243,38 +319,47 @@ function PropertyDetails() {
                                         <div className="about page-section" id="about">
                                             <h4>Property Brief</h4>
                                             <div className="row">
-                                                <div className="col-sm-4">
-                                                    <p>
-                                                        Residences can be classified by and how they are
-                                                        connected to neighbouring residences and land.
-                                                        Different types of housing tenure can be used for
-                                                        the same physical type.
-                                                    </p>
-                                                </div>
-                                                <div className="col-sm-4">
-                                                    <p>
+                                                {/* <div className="col-sm-4" > */}
+                                                <p >
+                                                    {propertyDetails.description}
+                                                </p>
+                                                {/* </div> */}
+                                                {/*<div className="col-sm-4">
+                                                     <p>
                                                         connected residences might be owned by a single
                                                         entity and leased out, or owned separately with an
                                                         agreement covering the relationship between units
                                                         and common.
-                                                    </p>
+                                                    </p> 
                                                 </div>
                                                 <div className="col-sm-4">
-                                                    <p>
+                                                    {/* <p>
                                                         they are connected to neighbouring residences and
                                                         land. Different types of housing tenure can be used
                                                         for the same physical type.
-                                                    </p>
-                                                </div>
+                                                    </p> 
+                                                </div>*/}
                                             </div>
                                         </div>
                                     </div>
                                     <div className="desc-box">
                                         <div className="page-section feature-dec" id="feature">
                                             <h4 className="content-title">features</h4>
-                                            <div className="single-feature row">
-                                                <div className="col-xxl-3 col-xl-4 col-6">
-                                                    <ul>
+                                            <div className="single-feature " style={{ display: "grid", gridTemplateColumns: "auto auto auto ", gridTemplateRows: "auto auto auto auto" }}>
+                                                {propertyDetails.additionalFeatures?.map((feature) => {
+                                                    return (
+
+                                                        <ul>
+                                                            <li>
+                                                                <i className="fas fa-check"></i>{feature}
+                                                            </li>
+                                                        </ul>
+
+                                                    )
+                                                })}
+                                                {/* <div className="col-xxl-3 col-xl-4 col-6"> */}
+                                                {/* <ul>
+
                                                         <li>
                                                             <i className="fas fa-wifi"></i> Free Wi-Fi
                                                         </li>
@@ -303,8 +388,8 @@ function PropertyDetails() {
                                                         <li>
                                                             <i className="fas fa-first-aid"></i> Doctor On Call
                                                         </li>
-                                                    </ul>
-                                                </div>
+                                            </ul> */}
+                                                {/* </div> 
                                                 <div className="col-xxl-3 col-xl-4 col-6">
                                                     <ul>
                                                         <li>
@@ -317,185 +402,131 @@ function PropertyDetails() {
                                                         <li>
                                                             <i className="fas fa-fan"></i> Air Conditioning
                                                         </li>
-                                                    </ul>
-                                                </div>
+                                                    </ul>*/}
+                                                {/* </div>  */}
                                             </div>
                                         </div>
                                     </div>
                                     <div className="desc-box">
                                         <div className="page-section ratio3_2" id="gallery">
                                             <h4 className="content-title">gallery</h4>
-                                            <div className="single-gallery">
+                                            {/* <div className="single-gallery">
                                                 <div className="gallery-for">
-                                                    <div>
+
+                                                    <div style={{ width: "100%", display: "inline-block" }}>
                                                         <div>
                                                             <img
-                                                                src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F4.jpg?alt=media&token=2774369b-8a80-4459-8227-c3c245627c70"
+                                                                src={propertyDetails.urlarray?.[0]}
                                                                 className="bg-img"
                                                                 alt=""
                                                                 width="900px"
+                                                                height="500px"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div>
+                                                        <div>
+                                                            <img
+                                                                src={propertyDetails.urlarray?.[1]}
+                                                                className="bg-img"
+                                                                alt=""
+                                                                width="900px"
+                                                                height="500px"
                                                             />
                                                         </div>
                                                     </div>
                                                     <div>
                                                         <div>
-                                                            <img
-                                                                src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F3.jpg?alt=media&token=9429c4ec-99d2-46c6-be3c-4fc961660a64"
-                                                                className="bg-img"
-                                                                alt=""
-                                                                width="900px"
-                                                            />
+                                                            {propertyDetails.urlarray?.[2] ?
+                                                                <img
+                                                                    src={propertyDetails.urlarray?.[2]}
+                                                                    className="bg-img"
+                                                                    alt=""
+                                                                    width="900px"
+                                                                    height="500px"
+                                                                /> : ""}
+                                                        </div>
+                                                    </div>
+
+                                                    <div>
+                                                        <div>
+                                                            {propertyDetails.urlarray?.[3] ?
+                                                                <img
+                                                                    src={propertyDetails.urlarray?.[3]}
+                                                                    className="bg-img"
+                                                                    alt=""
+                                                                    width="900px"
+                                                                    height="500px"
+                                                                />
+                                                                : ""}
                                                         </div>
                                                     </div>
                                                     <div>
                                                         <div>
-                                                            <img
-                                                                src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F14.jpg?alt=media&token=f2cb22cb-7e43-4ee2-bcd6-59e072b5ff30"
-                                                                className="bg-img"
-                                                                alt=""
-                                                                width="900px"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div>
-                                                            <img
-                                                                src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F11%20(1).jpg?alt=media&token=96811497-5a70-4a9e-953f-9d39dcbfbaed"
-                                                                className="bg-img"
-                                                                alt=""
-                                                                width="900px"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div>
-                                                            <img
-                                                                src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F12.jpg?alt=media&token=0ceb79d7-3c7b-4242-a0a0-c1d1b140db5e"
-                                                                className="bg-img"
-                                                                alt=""
-                                                                width="900px"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div>
-                                                            <img
-                                                                src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F4.jpg?alt=media&token=2774369b-8a80-4459-8227-c3c245627c70"
-                                                                className="bg-img"
-                                                                alt=""
-                                                                width="900px"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div>
-                                                            <img
-                                                                src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F3.jpg?alt=media&token=9429c4ec-99d2-46c6-be3c-4fc961660a64"
-                                                                className="bg-img"
-                                                                alt=""
-                                                                width="900px"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div>
-                                                            <img
-                                                                src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F11%20(1).jpg?alt=media&token=96811497-5a70-4a9e-953f-9d39dcbfbaed"
-                                                                className="bg-img"
-                                                                alt=""
-                                                                width="900px"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div>
-                                                            <img
-                                                                src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F12.jpg?alt=media&token=0ceb79d7-3c7b-4242-a0a0-c1d1b140db5e"
-                                                                className="bg-img"
-                                                                alt=""
-                                                                width="900px"
-                                                            />
+                                                            {propertyDetails.urlarray?.[4] ?
+                                                                <img
+                                                                    src={propertyDetails.urlarray?.[4]}
+                                                                    className="bg-img"
+                                                                    alt=""
+                                                                    width="900px"
+                                                                    height="500px"
+                                                                />
+                                                                : ""}
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div className="gallery-nav">
                                                     <div>
                                                         <img
-                                                            src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F4.jpg?alt=media&token=2774369b-8a80-4459-8227-c3c245627c70"
+                                                            src={propertyDetails.urlarray?.[0]}
                                                             className="img-fluid"
                                                             alt=""
                                                             width="900px"
+                                                            height="500px"
                                                         />
                                                     </div>
                                                     <div>
                                                         <img
-                                                            src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F3.jpg?alt=media&token=9429c4ec-99d2-46c6-be3c-4fc961660a64"
+                                                            src={propertyDetails.urlarray?.[1]}
                                                             className="img-fluid"
                                                             alt=""
                                                             width="900px"
+                                                            height="500px"
                                                         />
                                                     </div>
                                                     <div>
-                                                        <img
-                                                            src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F14.jpg?alt=media&token=f2cb22cb-7e43-4ee2-bcd6-59e072b5ff30"
-                                                            className="img-fluid"
-                                                            alt=""
-                                                            width="900px"
-                                                        />
+                                                        {propertyDetails.urlarray?.[2] ?
+                                                            <img
+                                                                src={propertyDetails.urlarray?.[2]}
+                                                                className="img-fluid"
+                                                                alt=""
+                                                                width="900px"
+                                                                height="500px"
+                                                            /> : ""}
                                                     </div>
-                                                    <div>
+                                                    <div>{propertyDetails.urlarray?.[3] ?
                                                         <img
-                                                            src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F11%20(1).jpg?alt=media&token=96811497-5a70-4a9e-953f-9d39dcbfbaed"
+                                                            src={propertyDetails.urlarray?.[3]}
                                                             className="img-fluid"
                                                             alt=""
                                                             width="900px"
-                                                        />
+                                                            height="500px"
+                                                        /> : ""}
                                                     </div>
-                                                    <div>
+                                                    <div>{propertyDetails.urlarray?.[4] ?
                                                         <img
-                                                            src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F12.jpg?alt=media&token=0ceb79d7-3c7b-4242-a0a0-c1d1b140db5e"
+                                                            src={propertyDetails.urlarray?.[4]}
                                                             className="img-fluid"
                                                             alt=""
                                                             width="900px"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <img
-                                                            src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F4.jpg?alt=media&token=2774369b-8a80-4459-8227-c3c245627c70"
-                                                            className="img-fluid"
-                                                            alt=""
-                                                            width="900px"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <img
-                                                            src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F3.jpg?alt=media&token=9429c4ec-99d2-46c6-be3c-4fc961660a64"
-                                                            className="img-fluid"
-                                                            alt=""
-                                                            width="900px"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <img
-                                                            src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F11%20(1).jpg?alt=media&token=96811497-5a70-4a9e-953f-9d39dcbfbaed"
-                                                            className="img-fluid"
-                                                            alt=""
-                                                            width="900px"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <img
-                                                            src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2F12.jpg?alt=media&token=0ceb79d7-3c7b-4242-a0a0-c1d1b140db5e"
-                                                            className="img-fluid"
-                                                            alt=""
-                                                            width="900px"
-                                                        />
+                                                        /> : ""}
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="desc-box">
+                                    {/* <div className="desc-box">
                                         <div className="page-section ratio_40" id="video">
                                             <h4 className="content-title">video</h4>
                                             <div className="play-bg-image">
@@ -518,7 +549,94 @@ function PropertyDetails() {
                                                 </div>
                                             </div>
                                         </div>
+                                    </div> */}
+
+                                            <div className="container mt-5">
+                                                <div className="carousel-container position-relative row">
+                                                    <div id="myCarousel" className="carousel slide" data-ride="carousel">
+                                                        <div className="carousel-inner">
+                                                            <div className="carousel-item active" data-slide-number="0">
+                                                                <img src={propertyDetails.urlarray?.[0]} className="d-block w-100" alt="..." data-remote={propertyDetails.urlarray?.[0]} data-type="image" data-toggle="lightbox" data-gallery="example-gallery" />
+                                                            </div>
+                                                            <div className="carousel-item" data-slide-number="1">
+                                                                <img src={propertyDetails.urlarray?.[1]} className="d-block w-100" alt="..." data-remote={propertyDetails.urlarray?.[1]} data-type="image" data-toggle="lightbox" data-gallery="example-gallery" />
+                                                            </div>
+                                                            <div className="carousel-item" data-slide-number="2">
+                                                                <img src={propertyDetails.urlarray?.[2]} className="d-block w-100" alt="..." data-remote={propertyDetails.urlarray?.[2]} data-type="image" data-toggle="lightbox" data-gallery="example-gallery" />
+                                                            </div>
+                                                            <div className="carousel-item" data-slide-number="3">
+                                                                <img src={propertyDetails.urlarray?.[3]} className="d-block w-100" alt="..." data-remote={propertyDetails.urlarray?.[3]} data-type="image" data-toggle="lightbox" data-gallery="example-gallery" />
+                                                            </div>
+                                                            <div className="carousel-item" data-slide-number="4">
+                                                                <img src={propertyDetails.urlarray?.[4]} className="d-block w-100" alt="..." data-remote={propertyDetails.urlarray?.[4]} data-type="image" data-toggle="lightbox" data-gallery="example-gallery" />
+                                                            </div>
+                                                            <div className="carousel-item" data-slide-number="5">
+                                                                <img src={propertyDetails.urlarray?.[5]} className="d-block w-100" alt="..." data-remote={propertyDetails.urlarray?.[5]} data-type="image" data-toggle="lightbox" data-gallery="example-gallery" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* <!-- Carousel Navigation --> */}
+                                                    <div id="carousel-thumbs" className="carousel slide" data-ride="carousel">
+                                                        <div className="carousel-inner">
+                                                            <div className="carousel-item active">
+                                                                <div className="row mx-0">
+                                                                    <div id="carousel-selector-0" className="thumb col-4 col-sm-2 px-1 py-2 selected" data-target="#myCarousel" data-slide-to="0">
+                                                                        <img src={propertyDetails.urlarray?.[0]} className="img-fluid" alt="..." width="200px" />
+                                                                    </div>
+                                                                    <div id="carousel-selector-1" className="thumb col-4 col-sm-2 px-1 py-2" data-target="#myCarousel" data-slide-to="1">
+                                                                        <img src={propertyDetails.urlarray?.[1]} className="img-fluid" alt="..." />
+                                                                    </div>
+                                                                    {propertyDetails.urlarray?.[2] ? <div id="carousel-selector-2" className="thumb col-4 col-sm-2 px-1 py-2" data-target="#myCarousel" data-slide-to="2">
+                                                                        <img src={propertyDetails.urlarray?.[2]} className="img-fluid" alt="..." />
+                                                                    </div> : ""}
+                                                                    {propertyDetails.urlarray?.[3] ? <div id="carousel-selector-3" className="thumb col-4 col-sm-2 px-1 py-2" data-target="#myCarousel" data-slide-to="3">
+                                                                        <img src={propertyDetails.urlarray?.[3]} className="img-fluid" alt="..." />
+                                                                    </div> : ""}
+                                                                    {propertyDetails.urlarray?.[4] ? <div id="carousel-selector-4" className="thumb col-4 col-sm-2 px-1 py-2" data-target="#myCarousel" data-slide-to="4">
+                                                                        <img src={propertyDetails.urlarray?.[4]} className="img-fluid" alt="..." />
+                                                                    </div> : ""}
+                                                                    {propertyDetails.urlarray?.[5] ? <div id="carousel-selector-5" className="thumb col-4 col-sm-2 px-1 py-2" data-target="#myCarousel" data-slide-to="5">
+                                                                        <img src={propertyDetails.urlarray?.[5]} className="img-fluid" alt="..." />
+                                                                    </div> : ""}
+                                                                </div>
+                                                            </div>
+                                                            <div className="carousel-item">
+                                                                <div className="row mx-0">
+                                                                    <div id="carousel-selector-6" className="thumb col-4 col-sm-2 px-1 py-2" data-target="#myCarousel" data-slide-to="6">
+                                                                        <img src={propertyDetails.urlarray?.[0]} className="img-fluid" alt="..." />
+                                                                    </div>
+                                                                    <div id="carousel-selector-7" className="thumb col-4 col-sm-2 px-1 py-2" data-target="#myCarousel" data-slide-to="7">
+                                                                        <img src={propertyDetails.urlarray?.[1]} className="img-fluid" alt="..." />
+                                                                    </div>
+                                                                    <div id="carousel-selector-8" className="thumb col-4 col-sm-2 px-1 py-2" data-target="#myCarousel" data-slide-to="8">
+                                                                        <img src={propertyDetails.urlarray?.[2]} className="img-fluid" alt="..." />
+                                                                    </div>
+                                                                    <div id="carousel-selector-9" className="thumb col-4 col-sm-2 px-1 py-2" data-target="#myCarousel" data-slide-to="9">
+                                                                        <img src={propertyDetails.urlarray?.[3]} className="img-fluid" alt="..." />
+                                                                    </div>
+                                                                    <div className="col-2 px-1 py-2"></div>
+                                                                    <div className="col-2 px-1 py-2"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {/* <a className="carousel-control-prev" href="#carousel-thumbs" role="button" data-slide="prev">
+                                                    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                    <span className="sr-only">Previous</span>
+                                                </a>
+                                                <a className="carousel-control-next" href="#carousel-thumbs" role="button" data-slide="next">
+                                                    <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                                    <span className="sr-only">Next</span>
+                                                </a> */}
+                                                    </div>
+
+                                                </div>
+                                                {/* <!-- /row --> */}
+                                            </div>
+                                            {/* <!-- /container --> */}
+                                        </div>
                                     </div>
+
                                     <div className="desc-box">
                                         <div className="page-section" id="details">
                                             <h4 className="content-title">
@@ -535,13 +653,13 @@ function PropertyDetails() {
                                                 <div className="col-md-6 col-xl-4">
                                                     <ul className="property-list-details">
                                                         <li>
-                                                            <span>Property Type :</span> House
+                                                            <span>Property Type :</span>{propertyDetails.propertyType}
                                                         </li>
                                                         <li>
                                                             <span>Property ID :</span> ZOEA245
                                                         </li>
                                                         <li>
-                                                            <span>Property status :</span> For sale
+                                                            <span>Property status :</span>{propertyDetails.propertyStatus}
                                                         </li>
                                                         <li>
                                                             <span>Operating Since :</span> 2008
@@ -551,26 +669,26 @@ function PropertyDetails() {
                                                 <div className="col-md-6 col-xl-4">
                                                     <ul className="property-list-details">
                                                         <li>
-                                                            <span>Price :</span> ₹ 1,50,000
+                                                            <span>Price :</span>{propertyDetails.price}
                                                         </li>
                                                         <li>
-                                                            <span>Property Size :</span> 1730 sq / ft
+                                                            <span>Property Size :</span>{propertyDetails.area}
                                                         </li>
                                                         <li>
-                                                            <span>Balcony :</span> 2
+                                                            <span>Balcony :</span>{propertyDetails.balcony}
                                                         </li>
                                                     </ul>
                                                 </div>
                                                 <div className="col-md-6 col-xl-4">
                                                     <ul className="property-list-details">
                                                         <li>
-                                                            <span>City :</span> Newyork
+                                                            <span>City :</span>{propertyDetails.city}
                                                         </li>
                                                         <li>
-                                                            <span>Bedrooms :</span> 8
+                                                            <span>Bedrooms :</span>{propertyDetails.beds}
                                                         </li>
                                                         <li>
-                                                            <span>Bathrooms :</span> 4
+                                                            <span>Bathrooms :</span>{propertyDetails.baths}
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -585,7 +703,7 @@ function PropertyDetails() {
                                         <div className="page-section" id="floor_plan">
                                             <h4 className="content-title">Floor plan</h4>
                                             <img
-                                                src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Fproperties%2Ffloor-plan.png?alt=media&token=e993c034-fedc-463a-b77d-4943de67e428"
+                                                src={propertyDetails.floorurlarray}
                                                 alt=""
                                                 className="img-fluid"
                                                 width="900px"
@@ -1036,7 +1154,7 @@ function PropertyDetails() {
                                             </div>
                                         </div>
                                     </div>{" "}
-                                    <div className="advance-card feature-card">
+                                    {/* <div className="advance-card feature-card">
                                         <h6>Featured</h6>
                                         <div className="feature-slider">
                                             <div className="feature-container">
@@ -1140,7 +1258,7 @@ function PropertyDetails() {
                                                 </li>
                                             </ul>
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div className="advance-card">
                                         <h6>Mortgage</h6>
                                         <div className="category-property">
