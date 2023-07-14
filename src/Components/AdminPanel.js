@@ -5,7 +5,7 @@ import logoLight from "../assets/logo-light.png"
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import { db } from "../FirebaseAuth/firebase"
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { storage } from "../FirebaseAuth/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { signOut } from "firebase/auth";
@@ -28,6 +28,7 @@ function AdminPanel() {
     country: "",
     description: "",
     landmark: "",
+    listingStatus: "",
     pincode: "",
     price: "",
     propertyPrice: "",
@@ -174,11 +175,13 @@ const navigate = useNavigate();
         beds: details.beds,
         city: details.city,
         country: details.country,
+        createdAt: serverTimestamp(),
         description: details.description,
         floorurlarray,
         garage: details.garage,
         halls: details.halls,
         landmark: details.landmark,
+        listingStatus: details.listingStatus,
         maxRooms: details.maxRooms,
         pincode: details.pincode,
         price: details.price,
@@ -796,6 +799,14 @@ const navigate = useNavigate();
                             </div>
                           </div>
                         </div> */}
+                        <div className="form-group col-sm-4">
+                          <label >Listng Status</label>
+                          <select className="form-control" name="listingStatus" onChange={onChangeHandler}>
+                            <option  value={details.draft}>Draft</option>
+                            <option value={details.active}>Active</option>
+                            <option value={details.closed}>Closed</option>
+                          </select>
+                        </div>
                         <div className="form-group col-sm-4">
                           <label >Max Rooms</label>
                           <select className="form-control" name="maxRooms" onChange={onChangeHandler}>
