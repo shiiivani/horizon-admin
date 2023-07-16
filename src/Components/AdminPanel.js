@@ -29,6 +29,7 @@ function AdminPanel() {
     description: "",
     landmark: "",
     listingStatus: "",
+    minimumHoldPeriod: "",
     pincode: "",
     price: "",
     propertyPrice: "",
@@ -169,23 +170,24 @@ const navigate = useNavigate();
         additionalFeatures: details.additionalFeatures,
         address: details.address,
         agencies: details.agencies,
-        area: details.area,
-        balcony: details.balcony,
-        baths: details.baths,
-        beds: details.beds,
+        area: Number(details.area),
+        balcony: Number(details.balcony),
+        baths: Number(details.baths),
+        beds: Number(details.beds),
         city: details.city,
         country: details.country,
         createdAt: serverTimestamp(),
         description: details.description,
         floorurlarray,
-        garage: details.garage,
-        halls: details.halls,
+        garage: Number(details.garage),
+        halls: Number(details.halls),
         landmark: details.landmark,
         listingStatus: details.listingStatus,
-        maxRooms: details.maxRooms,
+        maxRooms: Number(details.maxRooms),
+        minimumHoldPeriod: Number(details.minimumHoldPeriod),
         pincode: details.pincode,
-        price: details.price,
-        propertyPrice: details.propertyPrice,
+        price: Number(details.price),
+        propertyPrice: Number(details.propertyPrice),
         propertyStatus: details.propertyStatus,
         propertyType: details.propertyType,
         urlarray,
@@ -561,7 +563,7 @@ const navigate = useNavigate();
                         </div>
                         <div className="form-group col-sm-4">
                           <label>Property Price</label>
-                          <input type="text" className="form-control" placeholder="₹2800" name="propertyPrice" value={details.propertyPrice} onChange={onChangeHandler} required="" />
+                          <input type="number" className="form-control" placeholder="₹2800" name="propertyPrice" value={details.propertyPrice} onChange={onChangeHandler} required="" />
                         </div>
                         {/* <div className="form-group col-sm-4">
                           <label>Max Rooms</label>
@@ -678,11 +680,15 @@ const navigate = useNavigate();
                         </div>
                         <div className="form-group col-sm-4">
                           <label>Area</label>
-                          <input type="text" className="form-control" name="area" value={details.area} onChange={onChangeHandler} placeholder="85 sq ft" />
+                          <input type="number" className="form-control" name="area" value={details.area} onChange={onChangeHandler} placeholder="85 sq ft" />
                         </div>
                         <div className="form-group col-sm-4">
                           <label>Price</label>
-                          <input type="text" className="form-control" name="price" value={details.price} onChange={onChangeHandler} placeholder="₹3000" />
+                          <input type="number" className="form-control" name="price" value={details.price} onChange={onChangeHandler} placeholder="₹3000" />
+                        </div>
+                        <div className="form-group col-sm-4">
+                          <label>Minimum Hold Period</label>
+                          <input type="number" className="form-control" name="minimumHoldPeriod" value={details.minimumHoldPeriod} onChange={onChangeHandler} placeholder="₹3000" />
                         </div>
                         {/* <div className="form-group col-sm-4">
                           <label>Agencies</label>
