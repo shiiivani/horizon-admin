@@ -41,17 +41,17 @@ function AdminPanel() {
   const [url, setUrl] = useState([]);
   const [propertyImage, setPropertyImage] = useState("");
   const [floorPlanImage, setFloorPlanImage] = useState("");
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-          if (user) {
-            navigate("/admin-panel")
-          } else {
-            navigate("/login")
-          }
-        });
-      }, []);
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate("/admin-panel")
+      } else {
+        navigate("/login")
+      }
+    });
+  }, []);
 
   const onChangeHandler = (event) => {
     if (event.target.name === "additionalFeatures") {
@@ -134,28 +134,28 @@ const navigate = useNavigate();
 
   const urlarray = [];
 
-   const uploadProperty = async () => {
+  const uploadProperty = async () => {
     for (let i = 0; i < propertyImage.length; i++) {
       const imageRef = ref(storage, `/propertyImages/${propertyImage[i].name}`);
       await uploadBytes(imageRef, propertyImage[i])
-      const url = await getDownloadURL(imageRef) 
-        urlarray.push(url);
-        console.log(urlarray)
-        // setButtonDisabled(false);  
+      const url = await getDownloadURL(imageRef)
+      urlarray.push(url);
+      console.log(urlarray)
+      // setButtonDisabled(false);  
     }
     return urlarray;
   };
 
-  const floorurlarray =[]
+  const floorurlarray = []
 
-   const uploadFloorPlan = async () => {
+  const uploadFloorPlan = async () => {
     for (let i = 0; i < floorPlanImage.length; i++) {
       const floorRef = ref(storage, `/propertyImages/${floorPlanImage[i].name}`);
       const result = await uploadBytes(floorRef, floorPlanImage[i])
       const url = await getDownloadURL(floorRef)
-        floorurlarray.push(url)
-        console.log(floorurlarray)
-        // setButtonDisabled(false);
+      floorurlarray.push(url)
+      console.log(floorurlarray)
+      // setButtonDisabled(false);
     }
     return floorurlarray;
   };
@@ -194,6 +194,7 @@ const navigate = useNavigate();
       });
       console.log("Document written with ID: ", docref.id);
       setErr("Details sent Successfully");
+      navigate("/property-list")
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -557,7 +558,8 @@ const navigate = useNavigate();
                         <div className="form-group col-sm-4">
                           <label >Property Status</label>
                           <select className="form-control" name="propertyStatus" onChange={onChangeHandler}>
-                            <option  value={details.rent}>For Rent</option>
+                            <option selected disabled >Property Status</option>
+                            <option value={details.rent}>For Rent</option>
                             <option value={details.sale}>For Sale</option>
                           </select>
                         </div>
@@ -581,7 +583,8 @@ const navigate = useNavigate();
                         <div className="form-group col-sm-4">
                           <label >Listng Status</label>
                           <select className="form-control" name="listingStatus" onChange={onChangeHandler}>
-                            <option  value={details.draft}>Draft</option>
+                            <option selected disabled>Listing Status</option>
+                            <option value={details.draft}>Draft</option>
                             <option value={details.active}>Active</option>
                             <option value={details.closed}>Closed</option>
                           </select>
@@ -589,7 +592,8 @@ const navigate = useNavigate();
                         <div className="form-group col-sm-4">
                           <label >Max Rooms</label>
                           <select className="form-control" name="maxRooms" onChange={onChangeHandler}>
-                            <option  value={details.one}>1</option>
+                            <option selected disabled>0</option>
+                            <option value={details.one}>1</option>
                             <option value={details.two}>2</option>
                             <option value={details.three}>3</option>
                             <option value={details.four}>4</option>
@@ -600,7 +604,8 @@ const navigate = useNavigate();
                         <div className="form-group col-sm-4">
                           <label >Halls</label>
                           <select className="form-control" name="halls" onChange={onChangeHandler}>
-                            <option  value={details.one}>1</option>
+                            <option selected disabled>0</option>
+                            <option value={details.one}>1</option>
                             <option value={details.two}>2</option>
                             <option value={details.three}>3</option>
                             <option value={details.four}>4</option>
@@ -624,7 +629,8 @@ const navigate = useNavigate();
                         <div className="form-group col-sm-4">
                           <label >Beds</label>
                           <select className="form-control" name="beds" onChange={onChangeHandler}>
-                            <option  value={details.one}>1</option>
+                            <option selected disabled>0</option>
+                            <option value={details.one}>1</option>
                             <option value={details.two}>2</option>
                             <option value={details.three}>3</option>
                             <option value={details.four}>4</option>
@@ -648,7 +654,8 @@ const navigate = useNavigate();
                         <div className="form-group col-sm-4">
                           <label >Baths</label>
                           <select className="form-control" name="baths" onChange={onChangeHandler}>
-                            <option  value={details.one}>1</option>
+                            <option selected disabled>0</option>
+                            <option value={details.one}>1</option>
                             <option value={details.two}>2</option>
                             <option value={details.three}>3</option>
                             <option value={details.four}>4</option>
@@ -659,7 +666,8 @@ const navigate = useNavigate();
                         <div className="form-group col-sm-4">
                           <label >Garage</label>
                           <select className="form-control" name="garage" onChange={onChangeHandler}>
-                            <option  value={details.one}>1</option>
+                            <option selected disabled>0</option>
+                            <option value={details.one}>1</option>
                             <option value={details.two}>2</option>
                             <option value={details.three}>3</option>
                             <option value={details.four}>4</option>
@@ -670,6 +678,7 @@ const navigate = useNavigate();
                         <div className="form-group col-sm-4">
                           <label >Balcony</label>
                           <select className="form-control" name="balcony" onChange={onChangeHandler}>
+                            <option selected disabled>0</option>
                             <option value={details.one}>1</option>
                             <option value={details.two}>2</option>
                             <option value={details.three}>3</option>
@@ -706,6 +715,7 @@ const navigate = useNavigate();
                         <div className="form-group col-sm-4">
                           <label >Agencies</label>
                           <select className="form-control" name="agencies" onChange={onChangeHandler}>
+                            <option selected disabled>Agencies</option>
                             <option value={details.blueSky}>Blue Sky</option>
                             <option value={details.zephyr}>Zephyr</option>
                             <option value={details.premiere}>Premiere</option>
@@ -738,7 +748,8 @@ const navigate = useNavigate();
                         <div className="form-group col-sm-4">
                           <label >Country</label>
                           <select className="form-control" name="country" onChange={onChangeHandler}>
-                            <option  value={details.india}>India</option>
+                          <option selected disabled>Country</option>
+                            <option value={details.india}>India</option>
                             <option value={details.brazil}>Brazil</option>
                             <option value={details.usa}>USA</option>
                             <option value={details.austria}>Austria</option>
@@ -759,7 +770,8 @@ const navigate = useNavigate();
                         <div className="form-group col-sm-4">
                           <label >City</label>
                           <select className="form-control" name="city" onChange={onChangeHandler}>
-                            <option  value={details.bangalore}>Bangalore</option>
+                          <option selected disabled>City</option>
+                            <option value={details.bangalore}>Bangalore</option>
                             <option value={details.newDelhi}>New Delhi</option>
                             <option value={details.lucknow}>Luknow</option>
                             <option value={details.mumbai}>Mumbai</option>
@@ -863,7 +875,7 @@ const navigate = useNavigate();
                         </div>
                         <div className="form-btn col-sm-12">
                           {/* <button type="button" className="btn btn-pill btn-gradient color-4 " style={{ width: "100px" }} onClick={() => {uploadFloorPlan(); uploadProperty();}}>Upload</button> */}
-                          <button type="submit" className="btn btn-pill btn-gradient color-4 " style={{ width: "150px"}} onClick={submitHandler}>Submit</button>
+                          <button type="submit" className="btn btn-pill btn-gradient color-4 " style={{ width: "150px" }} onClick={submitHandler}>Submit</button>
                         </div>
                       </form>
                     </div>

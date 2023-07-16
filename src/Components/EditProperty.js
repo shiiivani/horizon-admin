@@ -494,6 +494,7 @@ function EditProperty() {
                         <div className="form-group col-sm-4">
                           <label >Property Status</label>
                           <select className="form-control" name="propertyStatus" onChange={onChangeHandler}>
+                          <option  disabled>Property Status</option>
                             <option value={details.rent}>For Rent</option>
                             <option value={details.sale}>For Sale</option>
                           </select>
@@ -519,6 +520,7 @@ function EditProperty() {
                         <div className="form-group col-sm-4">
                           <label >Listng Status</label>
                           <select className="form-control" name="listingStatus" onChange={onChangeHandler}>
+                          <option  disabled>Listing Status</option>
                             {details.listingStatus?.includes("Draft") ? <option selected value={details.draft}>Draft</option> : <option value={details.draft}>Draft</option>}
                             {details.listingStatus?.includes("Active") ? <option selected value={details.active}>Active</option> : <option value={details.active}>Active</option>}
                             {details.listingStatus?.includes("Closed") ? <option selected value={details.closed}>Closed</option> : <option value={details.closed}>Closed</option>}
@@ -527,6 +529,7 @@ function EditProperty() {
                         <div className="form-group col-sm-4">
                           <label >Max Rooms</label>
                           <select className="form-control" name="maxRooms" onChange={onChangeHandler}>
+                          <option  disabled>0</option>
                             {details.maxRooms?.includes("1") ? <option selected value={details.one}>1</option> : <option value={details.one}>1</option>}
                             {details.maxRooms?.includes("2") ? <option selected value={details.two}>2</option> : <option value={details.two}>2</option>}
                             {details.maxRooms?.includes("3") ? <option selected value={details.three}>3</option> : <option value={details.three}>3</option>}
@@ -538,6 +541,7 @@ function EditProperty() {
                         <div className="form-group col-sm-4">
                           <label >Halls</label>
                           <select className="form-control" name="halls" onChange={onChangeHandler}>
+                          <option  disabled>0</option>
                             {details.halls?.includes("1") ? <option selected value={details.one}>1</option> : <option value={details.one}>1</option>}
                             {details.halls?.includes("2") ? <option selected value={details.two}>2</option> : <option value={details.two}>2</option>}
                             {details.halls?.includes("3") ? <option selected value={details.three}>3</option> : <option value={details.three}>3</option>}
@@ -562,6 +566,7 @@ function EditProperty() {
                         <div className="form-group col-sm-4">
                           <label >Beds</label>
                           <select className="form-control" name="beds" onChange={onChangeHandler}>
+                          <option  disabled>0</option>
                             {details.beds?.includes("1") ? <option selected value={details.one}>1</option> : <option value={details.one}>1</option>}
                             {details.beds?.includes("2") ? <option selected value={details.two}>2</option> : <option value={details.two}>2</option>}
                             {details.beds?.includes("3") ? <option selected value={details.three}>3</option> : <option value={details.three}>3</option>}
@@ -586,6 +591,7 @@ function EditProperty() {
                         <div className="form-group col-sm-4">
                           <label >Baths</label>
                           <select className="form-control" name="baths" onChange={onChangeHandler}>
+                          <option  disabled>0</option>
                             {details.baths?.includes("1") ? <option selected value={details.one}>1</option> : <option value={details.one}>1</option>}
                             {details.baths?.includes("2") ? <option selected value={details.two}>2</option> : <option value={details.two}>2</option>}
                             {details.baths?.includes("3") ? <option selected value={details.three}>3</option> : <option value={details.three}>3</option>}
@@ -597,6 +603,7 @@ function EditProperty() {
                         <div className="form-group col-sm-4">
                           <label >Garage</label>
                           <select className="form-control" name="garage" onChange={onChangeHandler}>
+                          <option  disabled>0</option>
                             {details.garage?.includes("1") ? <option selected value={details.one}>1</option> : <option value={details.one}>1</option>}
                             {details.garage?.includes("2") ? <option selected value={details.two}>2</option> : <option value={details.two}>2</option>}
                             {details.garage?.includes("3") ? <option selected value={details.three}>3</option> : <option value={details.three}>3</option>}
@@ -608,6 +615,7 @@ function EditProperty() {
                         <div className="form-group col-sm-4">
                           <label >Balcony</label>
                           <select className="form-control" name="balcony" onChange={onChangeHandler}>
+                          <option  disabled>0</option>
                             {details.balcony?.includes("1") ? <option selected value={details.one}>1</option> : <option value={details.one}>1</option>}
                             {details.balcony?.includes("2") ? <option selected value={details.two}>2</option> : <option value={details.two}>2</option>}
                             {details.balcony?.includes("3") ? <option selected value={details.three}>3</option> : <option value={details.three}>3</option>}
@@ -644,6 +652,7 @@ function EditProperty() {
                         <div className="form-group col-sm-4">
                           <label >Agencies</label>
                           <select className="form-control" name="agencies" onChange={onChangeHandler}>
+                          <option  disabled>Agencies</option>
                             {details.agencies?.includes("Blue Sky") ? <option selected value={details.blueSky}>Blue Sky</option> : <option value={details.blueSky}>Blue Sky</option>}
                             {details.agencies?.includes("Zephyr") ? <option selected value={details.zephyr}>Zephyr</option> : <option value={details.blueSky}>Zephyr</option>}
                             {details.agencies?.includes("Premiere") ? <option selected value={details.premiere}>Premiere</option> : <option value={details.premiere}>Premiere</option>}
@@ -676,6 +685,7 @@ function EditProperty() {
                         <div className="form-group col-sm-4">
                           <label >Country</label>
                           <select className="form-control" name="country" onChange={onChangeHandler}>
+                          <option  disabled>Country</option>
                             <option value={details.india}>India</option>
                             <option value={details.brazil}>Brazil</option>
                             <option value={details.usa}>USA</option>
@@ -697,6 +707,7 @@ function EditProperty() {
                         <div className="form-group col-sm-4">
                           <label >City</label>
                           <select className="form-control" name="city" onChange={onChangeHandler}>
+                          <option  disabled>City</option>
                             <option value={details.bangalore}>Bangalore</option>
                             <option value={details.newDelhi}>New Delhi</option>
                             <option value={details.lucknow}>Luknow</option>
