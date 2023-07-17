@@ -35,6 +35,7 @@ function AdminPanel() {
     propertyPrice: "",
     propertyStatus: "",
     propertyType: "",
+    propertyName: "",
   })
   const [err, setErr] = useState(false);
   const [floorUrl, setFloorUrl] = useState("");
@@ -187,6 +188,7 @@ function AdminPanel() {
         minimumHoldPeriod: Number(details.minimumHoldPeriod),
         pincode: details.pincode,
         price: Number(details.price),
+        propertyName: details.propertyName,
         propertyPrice: Number(details.propertyPrice),
         propertyStatus: details.propertyStatus,
         propertyType: details.propertyType,
@@ -542,8 +544,17 @@ function AdminPanel() {
                     <div className="card-body admin-form">
                       <form className="row gx-3" onSubmit={e => e.preventDefault()}>
                         <div className="form-group col-sm-4">
-                          <label>Property Type</label>
-                          <input type="text" className="form-control" placeholder="office,villa,apartment" name="propertyType" value={details.propertyType} onChange={onChangeHandler} required="" />
+                          <label>Property Name</label>
+                          <input type="text" className="form-control" placeholder="office,villa,apartment" name="propertyName" value={details.propertyName} onChange={onChangeHandler} required="" />
+                        </div>
+                        <div className="form-group col-sm-4">
+                          <label >Property Type</label>
+                          <select className="form-control" name="propertyType" onChange={onChangeHandler}>
+                            <option selected disabled >Property Type</option>
+                            <option value={details.residential}>Residential</option>
+                            <option value={details.commercial}>Commercial</option>
+                            <option value={details.land}>Land</option>
+                          </select>
                         </div>
                         {/* <div className="form-group col-sm-4">
                           <label>Property Status</label>
