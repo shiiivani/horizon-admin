@@ -285,12 +285,12 @@ function AdminPanel() {
               </div>
               <div id="mainsidebar">
                 <ul className="sidebar-menu custom-scrollbar">
-                  <li className="sidebar-item">
+                  {/* <li className="sidebar-item">
                     <a href="" className="sidebar-link only-link">
                       <Airplay />
                       <span>Dashboard</span>
                     </a>
-                  </li>
+                  </li> */}
                   <li className="sidebar-item">
                     <a href="/admin-panel" className="sidebar-link active">
                       <Grid />

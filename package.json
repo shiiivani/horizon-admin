@@ -28,7 +28,8 @@
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check **/*.js",
     "prettier:fix": "prettier --write src/**/*.js",
-    "format": "npm run lint:fix && npm run prettier:fix"
+    "format": "npm run lint:fix && npm run prettier:fix",
+    "deploy": "npm run build && firebase deploy --only hosting:admin-crowdpe"
   },
   "eslintConfig": {
     "extends": [
