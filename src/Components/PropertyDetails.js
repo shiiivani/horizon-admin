@@ -25,7 +25,6 @@ function PropertyDetails() {
   useEffect(() => {
     const docRef = doc(db, `propertyDetails/${id}`);
     getDoc(docRef).then((doc) => {
-      console.log(doc.data(), id);
       setPropertyDetails({ ...doc.data() });
     });
     // const docSnap = await getDoc(docRef);
@@ -38,7 +37,6 @@ function PropertyDetails() {
     //     console.log("No such document!");
     // }
 
-    console.log("data", propertyDetails);
   }, [id]);
   return (
     <div>

@@ -141,7 +141,6 @@ function AdminPanel() {
       await uploadBytes(imageRef, propertyImage[i])
       const url = await getDownloadURL(imageRef)
       urlarray.push(url);
-      console.log(urlarray)
       // setButtonDisabled(false);  
     }
     return urlarray;
@@ -194,7 +193,7 @@ function AdminPanel() {
         propertyType: details.propertyType,
         urlarray,
       });
-      console.log("Document written with ID: ", docref.id);
+      // console.log("Document written with ID: ", docref.id);
       setErr("Details sent Successfully");
       navigate("/property-list")
     } catch (e) {
@@ -906,7 +905,7 @@ function AdminPanel() {
                   <p className="mb-0">Copyright 2022 © Crowdpe All rights reserved.</p>
                 </div>
                 <div className="col-md-6">
-                  <p className="float-end mb-0">Developed with  <i className="fa fa-heart font-danger"></i></p>
+                  <p className="float-end mb-0">Developed with  <i className="fa fa-heart font-danger"></i> by Shivani</p>
                 </div>
               </div>
             </div>

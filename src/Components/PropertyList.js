@@ -49,7 +49,6 @@ function PropertyList() {
     fetchList();
   }, []);
 
-  console.log(propertyList);
 
   return (
     <div>

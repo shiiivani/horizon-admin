@@ -37,6 +37,7 @@ const Login = () => {
       .catch((err) => {
         if (err.code === "auth/wrong-password") {
           setErr("Wrong Password");
+          setTimeout(() => setErr(""), 3000)
         } else if (err.code === "auth/invalid-email") {
           setErr("Invalid Email");
         } else if (err.code === "auth/user-not-found") {

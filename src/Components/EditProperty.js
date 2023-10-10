@@ -80,7 +80,6 @@ function EditProperty() {
     if (snapshot.exists()) {
       setDetails({ ...snapshot.data() })
     }
-    console.log("data", details.additionalFeatures)
   };
 
   const urlarray = details.urlarray;
@@ -106,7 +105,6 @@ function EditProperty() {
       const result = await uploadBytes(floorRef, floorPlanImage[i])
       const url = await getDownloadURL(floorRef)
       floorurlarray.push(url)
-      console.log(floorurlarray)
       // setButtonDisabled(false);
     }
     return floorurlarray;
