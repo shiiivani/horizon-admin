@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Airplay,
+  BarChart,
   Bell,
   ChevronsLeft,
   Grid,
@@ -48,7 +49,6 @@ function PropertyList() {
     };
     fetchList();
   }, []);
-
 
   return (
     <div>
@@ -187,6 +187,12 @@ function PropertyList() {
                     >
                       <Layout />
                       <span>Property List</span>
+                    </a>
+                  </li>
+                  <li className="sidebar-item" style={{ cursor: "pointer" }}>
+                    <a href="/investment" className="sidebar-link">
+                      <BarChart />
+                      <span>Investment</span>
                     </a>
                   </li>
                   {/* <ul className="nav-submenu menu-content">

@@ -1,16 +1,24 @@
-import { useState, useEffect } from 'react'
-import logoDark from "../assets/logo-dark.png"
-import logoLight from "../assets/logo-light.png"
-import { Airplay, Bell, ChevronsLeft, Grid, Layout, Mail, Maximize, Save, Search } from 'react-feather'
-import { useParams } from 'react-router-dom'
-import { getDoc, doc, updateDoc } from 'firebase/firestore'
-import { db, storage } from "../FirebaseAuth/firebase"
+import { useState, useEffect } from "react";
+import logoDark from "../assets/logo-dark.png";
+import logoLight from "../assets/logo-light.png";
+import {
+  Airplay,
+  Bell,
+  ChevronsLeft,
+  Grid,
+  Layout,
+  Mail,
+  Maximize,
+  Save,
+  Search,
+} from "react-feather";
+import { useParams } from "react-router-dom";
+import { getDoc, doc, updateDoc } from "firebase/firestore";
+import { db, storage } from "../FirebaseAuth/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { auth } from "../FirebaseAuth/firebase";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
-
-
 
 function EditProperty() {
   const { id } = useParams();
@@ -19,13 +27,12 @@ function EditProperty() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigate(`/edit-property/${id}`)
+        navigate(`/edit-property/${id}`);
       } else {
-        navigate("/login")
+        navigate("/login");
       }
     });
   }, []);
-
 
   const [details, setDetails] = useState({
     additionalFeatures: [],
@@ -47,38 +54,39 @@ function EditProperty() {
     propertyStatus: "",
     propertyType: "",
     propertyName: "",
-  })
+  });
   const [propertyImage, setPropertyImage] = useState("");
   const [floorPlanImage, setFloorPlanImage] = useState("");
 
   const onChangeHandler = (event) => {
     if (event.target.name === "additionalFeatures") {
-      let copy = { ...details }
+      let copy = { ...details };
       let additionalFeatures = [];
       if (event.target.checked) {
-        copy.additionalFeatures.push(event.target.value)
+        copy.additionalFeatures.push(event.target.value);
       } else {
-        copy.additionalFeatures = copy.additionalFeatures.filter(el => !el === event.target.value)
+        copy.additionalFeatures = copy.additionalFeatures.filter(
+          (el) => !el === event.target.value
+        );
       }
-      setDetails(copy)
+      setDetails(copy);
     } else {
       setDetails(() => ({
         ...details,
-        [event.target.name]: event.target.value
-      }))
+        [event.target.name]: event.target.value,
+      }));
     }
   };
 
   useEffect(() => {
     id && getData();
-
-  }, [id])
+  }, [id]);
 
   const getData = async () => {
-    const docref = doc(db, "propertyDetails", id)
+    const docref = doc(db, "propertyDetails", id);
     const snapshot = await getDoc(docref);
     if (snapshot.exists()) {
-      setDetails({ ...snapshot.data() })
+      setDetails({ ...snapshot.data() });
     }
   };
 
@@ -87,12 +95,12 @@ function EditProperty() {
   const uploadProperty = async () => {
     for (let i = 0; i < propertyImage.length; i++) {
       const imageRef = ref(storage, `/propertyImages/${propertyImage[i].name}`);
-      await uploadBytes(imageRef, propertyImage[i])
-      const url = await getDownloadURL(imageRef)
+      await uploadBytes(imageRef, propertyImage[i]);
+      const url = await getDownloadURL(imageRef);
       urlarray.push(url);
 
-      console.log(urlarray)
-      // setButtonDisabled(false);  
+      console.log(urlarray);
+      // setButtonDisabled(false);
     }
     return urlarray;
   };
@@ -101,10 +109,13 @@ function EditProperty() {
 
   const uploadFloorPlan = async () => {
     for (let i = 0; i < floorPlanImage.length; i++) {
-      const floorRef = ref(storage, `/propertyImages/${floorPlanImage[i].name}`);
-      const result = await uploadBytes(floorRef, floorPlanImage[i])
-      const url = await getDownloadURL(floorRef)
-      floorurlarray.push(url)
+      const floorRef = ref(
+        storage,
+        `/propertyImages/${floorPlanImage[i].name}`
+      );
+      const result = await uploadBytes(floorRef, floorPlanImage[i]);
+      const url = await getDownloadURL(floorRef);
+      floorurlarray.push(url);
       // setButtonDisabled(false);
     }
     return floorurlarray;
@@ -130,6 +141,7 @@ function EditProperty() {
         floorurlarray,
         garage: Number(details.garage),
         halls: Number(details.halls),
+        id,
         landmark: details.landmark,
         listingStatus: details.listingStatus,
         maxRooms: Number(details.maxRooms),
@@ -147,23 +159,25 @@ function EditProperty() {
     } catch (e) {
       console.error("Error adding document: ", e);
     }
-  }
+  };
 
   return (
     <div>
-
       {/* <!-- Loader start --> */}
       <div className="loader-wrapper">
         <div className="row loader-img">
           <div className="col-12">
-            <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Floader-2.gif?alt=media&token=88f706ef-427c-4fc3-ab28-f5fd4dd50e72" className="img-fluid" alt="" />
+            <img
+              src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Floader-2.gif?alt=media&token=88f706ef-427c-4fc3-ab28-f5fd4dd50e72"
+              className="img-fluid"
+              alt=""
+            />
           </div>
         </div>
       </div>
       {/* <!-- Loader end --> */}
 
       <div className="page-wrapper">
-
         {/* <!-- page header start --> */}
         <div className="page-main-header row">
           <div id="sidebar-toggle" className="toggle-sidebar col-auto">
@@ -177,15 +191,28 @@ function EditProperty() {
                   <Search />
                 </div>
                 <div className="form-group search-form">
-                  <input type="text" className="form-control" placeholder="Search here..." />
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search here..."
+                  />
                 </div>
               </li>
               <li className="profile-avatar onhover-dropdown">
                 <div>
-                  <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F3.png?alt=media&token=a43e2409-29f3-481a-a1cd-0923f60b69de" className="img-fluid" alt="" />
+                  <img
+                    src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F3.png?alt=media&token=a43e2409-29f3-481a-a1cd-0923f60b69de"
+                    className="img-fluid"
+                    alt=""
+                  />
                 </div>
                 <ul className="profile-dropdown onhover-show-div">
-                  <li><a href="login.html"><span>Log in</span><i data-feather="log-in"></i></a></li>
+                  <li>
+                    <a href="login.html">
+                      <span>Log in</span>
+                      <i data-feather="log-in"></i>
+                    </a>
+                  </li>
                 </ul>
               </li>
             </ul>
@@ -194,7 +221,6 @@ function EditProperty() {
 
         {/* <!-- page header end --> */}
         <div className="page-body-wrapper">
-
           {/* <!-- page sidebar start --> */}
           <div className="page-sidebar">
             <div className="logo-wrap">
@@ -210,10 +236,16 @@ function EditProperty() {
               <div className="user-profile">
                 <div className="media">
                   <div className="change-pic">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F3.png?alt=media&token=a43e2409-29f3-481a-a1cd-0923f60b69de" className="img-fluid" alt="" />
+                    <img
+                      src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F3.png?alt=media&token=a43e2409-29f3-481a-a1cd-0923f60b69de"
+                      className="img-fluid"
+                      alt=""
+                    />
                   </div>
                   <div className="media-body">
-                    <a href="user-profile.html"><h6>Zack Lee</h6></a>
+                    <a href="user-profile.html">
+                      <h6>Zack Lee</h6>
+                    </a>
                     <span className="font-roboto">zackle@gmail.com</span>
                   </div>
                 </div>
@@ -263,7 +295,7 @@ function EditProperty() {
                   <li className="sidebar-item" style={{ cursor: "pointer" }}>
                     <a href="/property-list" className="sidebar-link">
                       <Layout />
-                      <span >Property List</span>
+                      <span>Property List</span>
                     </a>
                   </li>
                   {/*<ul className="nav-submenu menu-content">
@@ -436,20 +468,19 @@ function EditProperty() {
           {/* <!-- page sidebar end --> */}
 
           <div className="page-body">
-
             {/* <!-- Container-fluid start --> */}
             <div className="container-fluid">
               <div className="page-header">
                 <div className="row">
                   <div className="col-sm-6">
                     <div className="page-header-left">
-                      <h3>Edit property
+                      <h3>
+                        Edit property
                         <small>Welcome to admin panel</small>
                       </h3>
                     </div>
                   </div>
                   <div className="col-sm-6">
-
                     {/* <!-- Breadcrumb start --> */}
                     <ol className="breadcrumb pull-right">
                       <li className="breadcrumb-item">
@@ -460,7 +491,6 @@ function EditProperty() {
                       <li className="breadcrumb-item active">My properties</li>
                     </ol>
                     {/* <!-- Breadcrumb end --> */}
-
                   </div>
                 </div>
               </div>
@@ -476,20 +506,39 @@ function EditProperty() {
                       <h5>Add property details</h5>
                     </div>
                     <div className="card-body admin-form">
-                      <form className="row gx-3" onSubmit={e => e.preventDefault()}>
+                      <form
+                        className="row gx-3"
+                        onSubmit={(e) => e.preventDefault()}
+                      >
                         <div className="form-group col-sm-4">
                           <label>Property Name</label>
-                          <input type="text" className="form-control" placeholder="office,villa,apartment" name="propertyName" value={details.propertyName} onChange={onChangeHandler} required="" />
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="office,villa,apartment"
+                            name="propertyName"
+                            value={details.propertyName}
+                            onChange={onChangeHandler}
+                            required=""
+                          />
                         </div>
                         <div className="form-group col-sm-4">
-                          <label >Property Type</label>
-                          <select className="form-control" name="propertyType" onChange={onChangeHandler}>
-                          <option  disabled>Property Type</option>
-                            <option value={details.residential}>Residential</option>
-                            <option value={details.commercial}>Commercial</option>
+                          <label>Property Type</label>
+                          <select
+                            className="form-control"
+                            name="propertyType"
+                            onChange={onChangeHandler}
+                          >
+                            <option disabled>Property Type</option>
+                            <option value={details.residential}>
+                              Residential
+                            </option>
+                            <option value={details.commercial}>
+                              Commercial
+                            </option>
                             <option value={details.land}>Land</option>
                           </select>
-                          </div>
+                        </div>
                         {/* <div className="form-group col-sm-4">
                               <label>Property Status</label>
                               <div className="dropdown">
@@ -501,18 +550,30 @@ function EditProperty() {
                               </div>
                             </div> */}
                         <div className="form-group col-sm-4">
-                          <label >Property Status</label>
-                          <select className="form-control" name="propertyStatus" onChange={onChangeHandler}>
-                          <option  disabled>Property Status</option>
+                          <label>Property Status</label>
+                          <select
+                            className="form-control"
+                            name="propertyStatus"
+                            onChange={onChangeHandler}
+                          >
+                            <option disabled>Property Status</option>
                             <option value={details.rent}>For Rent</option>
                             <option value={details.sale}>For Sale</option>
                           </select>
                         </div>
                         <div className="form-group col-sm-4">
                           <label>Property Price</label>
-                          <input type="number" className="form-control" placeholder="₹2800" name="propertyPrice" value={details.propertyPrice} onChange={onChangeHandler} required="" />
+                          <input
+                            type="number"
+                            className="form-control"
+                            placeholder="₹2800"
+                            name="propertyPrice"
+                            value={details.propertyPrice}
+                            onChange={onChangeHandler}
+                            required=""
+                          />
                         </div>
-                        
+
                         {/* <div className="form-group col-sm-4">
                               <label>Max Rooms</label>
                               <div className="dropdown">
@@ -527,36 +588,138 @@ function EditProperty() {
                               </div>
                             </div> */}
                         <div className="form-group col-sm-4">
-                          <label >Listng Status</label>
-                          <select className="form-control" name="listingStatus" onChange={onChangeHandler}>
-                          <option  disabled>Listing Status</option>
-                            {details.listingStatus?.includes("Draft") ? <option selected value={details.draft}>Draft</option> : <option value={details.draft}>Draft</option>}
-                            {details.listingStatus?.includes("Active") ? <option selected value={details.active}>Active</option> : <option value={details.active}>Active</option>}
-                            {details.listingStatus?.includes("Closed") ? <option selected value={details.closed}>Closed</option> : <option value={details.closed}>Closed</option>}
+                          <label>Listng Status</label>
+                          <select
+                            className="form-control"
+                            name="listingStatus"
+                            onChange={onChangeHandler}
+                          >
+                            <option disabled>Listing Status</option>
+                            {details.listingStatus?.includes("Draft") ? (
+                              <option selected value={details.draft}>
+                                Draft
+                              </option>
+                            ) : (
+                              <option value={details.draft}>Draft</option>
+                            )}
+                            {details.listingStatus?.includes("Active") ? (
+                              <option selected value={details.active}>
+                                Active
+                              </option>
+                            ) : (
+                              <option value={details.active}>Active</option>
+                            )}
+                            {details.listingStatus?.includes("Closed") ? (
+                              <option selected value={details.closed}>
+                                Closed
+                              </option>
+                            ) : (
+                              <option value={details.closed}>Closed</option>
+                            )}
                           </select>
                         </div>
                         <div className="form-group col-sm-4">
-                          <label >Max Rooms</label>
-                          <select className="form-control" name="maxRooms" onChange={onChangeHandler}>
-                          <option  disabled>0</option>
-                            {details.maxRooms?.includes("1") ? <option selected value={details.one}>1</option> : <option value={details.one}>1</option>}
-                            {details.maxRooms?.includes("2") ? <option selected value={details.two}>2</option> : <option value={details.two}>2</option>}
-                            {details.maxRooms?.includes("3") ? <option selected value={details.three}>3</option> : <option value={details.three}>3</option>}
-                            {details.maxRooms?.includes("4") ? <option selected value={details.four}>4</option> : <option value={details.four}>4</option>}
-                            {details.maxRooms?.includes("5") ? <option selected value={details.five}>5</option> : <option value={details.five}>5</option>}
-                            {details.maxRooms?.includes("6") ? <option selected value={details.six}>6</option> : <option value={details.six}>6</option>}
+                          <label>Max Rooms</label>
+                          <select
+                            className="form-control"
+                            name="maxRooms"
+                            onChange={onChangeHandler}
+                          >
+                            <option disabled>0</option>
+                            {details.maxRooms?.includes("1") ? (
+                              <option selected value={details.one}>
+                                1
+                              </option>
+                            ) : (
+                              <option value={details.one}>1</option>
+                            )}
+                            {details.maxRooms?.includes("2") ? (
+                              <option selected value={details.two}>
+                                2
+                              </option>
+                            ) : (
+                              <option value={details.two}>2</option>
+                            )}
+                            {details.maxRooms?.includes("3") ? (
+                              <option selected value={details.three}>
+                                3
+                              </option>
+                            ) : (
+                              <option value={details.three}>3</option>
+                            )}
+                            {details.maxRooms?.includes("4") ? (
+                              <option selected value={details.four}>
+                                4
+                              </option>
+                            ) : (
+                              <option value={details.four}>4</option>
+                            )}
+                            {details.maxRooms?.includes("5") ? (
+                              <option selected value={details.five}>
+                                5
+                              </option>
+                            ) : (
+                              <option value={details.five}>5</option>
+                            )}
+                            {details.maxRooms?.includes("6") ? (
+                              <option selected value={details.six}>
+                                6
+                              </option>
+                            ) : (
+                              <option value={details.six}>6</option>
+                            )}
                           </select>
                         </div>
                         <div className="form-group col-sm-4">
-                          <label >Halls</label>
-                          <select className="form-control" name="halls" onChange={onChangeHandler}>
-                          <option  disabled>0</option>
-                            {details.halls?.includes("1") ? <option selected value={details.one}>1</option> : <option value={details.one}>1</option>}
-                            {details.halls?.includes("2") ? <option selected value={details.two}>2</option> : <option value={details.two}>2</option>}
-                            {details.halls?.includes("3") ? <option selected value={details.three}>3</option> : <option value={details.three}>3</option>}
-                            {details.halls?.includes("4") ? <option selected value={details.four}>4</option> : <option value={details.four}>4</option>}
-                            {details.halls?.includes("5") ? <option selected value={details.five}>5</option> : <option value={details.five}>5</option>}
-                            {details.halls?.includes("6") ? <option selected value={details.six}>6</option> : <option value={details.six}>6</option>}
+                          <label>Halls</label>
+                          <select
+                            className="form-control"
+                            name="halls"
+                            onChange={onChangeHandler}
+                          >
+                            <option disabled>0</option>
+                            {details.halls?.includes("1") ? (
+                              <option selected value={details.one}>
+                                1
+                              </option>
+                            ) : (
+                              <option value={details.one}>1</option>
+                            )}
+                            {details.halls?.includes("2") ? (
+                              <option selected value={details.two}>
+                                2
+                              </option>
+                            ) : (
+                              <option value={details.two}>2</option>
+                            )}
+                            {details.halls?.includes("3") ? (
+                              <option selected value={details.three}>
+                                3
+                              </option>
+                            ) : (
+                              <option value={details.three}>3</option>
+                            )}
+                            {details.halls?.includes("4") ? (
+                              <option selected value={details.four}>
+                                4
+                              </option>
+                            ) : (
+                              <option value={details.four}>4</option>
+                            )}
+                            {details.halls?.includes("5") ? (
+                              <option selected value={details.five}>
+                                5
+                              </option>
+                            ) : (
+                              <option value={details.five}>5</option>
+                            )}
+                            {details.halls?.includes("6") ? (
+                              <option selected value={details.six}>
+                                6
+                              </option>
+                            ) : (
+                              <option value={details.six}>6</option>
+                            )}
                           </select>
                         </div>
                         {/* <div className="form-group col-sm-4">
@@ -573,15 +736,55 @@ function EditProperty() {
                               </div>
                             </div> */}
                         <div className="form-group col-sm-4">
-                          <label >Beds</label>
-                          <select className="form-control" name="beds" onChange={onChangeHandler}>
-                          <option  disabled>0</option>
-                            {details.beds?.includes("1") ? <option selected value={details.one}>1</option> : <option value={details.one}>1</option>}
-                            {details.beds?.includes("2") ? <option selected value={details.two}>2</option> : <option value={details.two}>2</option>}
-                            {details.beds?.includes("3") ? <option selected value={details.three}>3</option> : <option value={details.three}>3</option>}
-                            {details.beds?.includes("4") ? <option selected value={details.four}>4</option> : <option value={details.four}>4</option>}
-                            {details.beds?.includes("5") ? <option selected value={details.five}>5</option> : <option value={details.five}>5</option>}
-                            {details.beds?.includes("6") ? <option selected value={details.six}>6</option> : <option value={details.six}>6</option>}
+                          <label>Beds</label>
+                          <select
+                            className="form-control"
+                            name="beds"
+                            onChange={onChangeHandler}
+                          >
+                            <option disabled>0</option>
+                            {details.beds?.includes("1") ? (
+                              <option selected value={details.one}>
+                                1
+                              </option>
+                            ) : (
+                              <option value={details.one}>1</option>
+                            )}
+                            {details.beds?.includes("2") ? (
+                              <option selected value={details.two}>
+                                2
+                              </option>
+                            ) : (
+                              <option value={details.two}>2</option>
+                            )}
+                            {details.beds?.includes("3") ? (
+                              <option selected value={details.three}>
+                                3
+                              </option>
+                            ) : (
+                              <option value={details.three}>3</option>
+                            )}
+                            {details.beds?.includes("4") ? (
+                              <option selected value={details.four}>
+                                4
+                              </option>
+                            ) : (
+                              <option value={details.four}>4</option>
+                            )}
+                            {details.beds?.includes("5") ? (
+                              <option selected value={details.five}>
+                                5
+                              </option>
+                            ) : (
+                              <option value={details.five}>5</option>
+                            )}
+                            {details.beds?.includes("6") ? (
+                              <option selected value={details.six}>
+                                6
+                              </option>
+                            ) : (
+                              <option value={details.six}>6</option>
+                            )}
                           </select>
                         </div>
                         {/* <div className="form-group col-sm-4">
@@ -598,52 +801,194 @@ function EditProperty() {
                               </div>
                             </div> */}
                         <div className="form-group col-sm-4">
-                          <label >Baths</label>
-                          <select className="form-control" name="baths" onChange={onChangeHandler}>
-                          <option  disabled>0</option>
-                            {details.baths?.includes("1") ? <option selected value={details.one}>1</option> : <option value={details.one}>1</option>}
-                            {details.baths?.includes("2") ? <option selected value={details.two}>2</option> : <option value={details.two}>2</option>}
-                            {details.baths?.includes("3") ? <option selected value={details.three}>3</option> : <option value={details.three}>3</option>}
-                            {details.baths?.includes("4") ? <option selected value={details.four}>4</option> : <option value={details.four}>4</option>}
-                            {details.baths?.includes("5") ? <option selected value={details.five}>5</option> : <option value={details.five}>5</option>}
-                            {details.baths?.includes("6") ? <option selected value={details.six}>6</option> : <option value={details.six}>6</option>}
+                          <label>Baths</label>
+                          <select
+                            className="form-control"
+                            name="baths"
+                            onChange={onChangeHandler}
+                          >
+                            <option disabled>0</option>
+                            {details.baths?.includes("1") ? (
+                              <option selected value={details.one}>
+                                1
+                              </option>
+                            ) : (
+                              <option value={details.one}>1</option>
+                            )}
+                            {details.baths?.includes("2") ? (
+                              <option selected value={details.two}>
+                                2
+                              </option>
+                            ) : (
+                              <option value={details.two}>2</option>
+                            )}
+                            {details.baths?.includes("3") ? (
+                              <option selected value={details.three}>
+                                3
+                              </option>
+                            ) : (
+                              <option value={details.three}>3</option>
+                            )}
+                            {details.baths?.includes("4") ? (
+                              <option selected value={details.four}>
+                                4
+                              </option>
+                            ) : (
+                              <option value={details.four}>4</option>
+                            )}
+                            {details.baths?.includes("5") ? (
+                              <option selected value={details.five}>
+                                5
+                              </option>
+                            ) : (
+                              <option value={details.five}>5</option>
+                            )}
+                            {details.baths?.includes("6") ? (
+                              <option selected value={details.six}>
+                                6
+                              </option>
+                            ) : (
+                              <option value={details.six}>6</option>
+                            )}
                           </select>
                         </div>
                         <div className="form-group col-sm-4">
-                          <label >Garage</label>
-                          <select className="form-control" name="garage" onChange={onChangeHandler}>
-                          <option  disabled>0</option>
-                            {details.garage?.includes("1") ? <option selected value={details.one}>1</option> : <option value={details.one}>1</option>}
-                            {details.garage?.includes("2") ? <option selected value={details.two}>2</option> : <option value={details.two}>2</option>}
-                            {details.garage?.includes("3") ? <option selected value={details.three}>3</option> : <option value={details.three}>3</option>}
-                            {details.garage?.includes("4") ? <option selected value={details.four}>4</option> : <option value={details.four}>4</option>}
-                            {details.garage?.includes("5") ? <option selected value={details.five}>5</option> : <option value={details.five}>5</option>}
-                            {details.garage?.includes("6") ? <option selected value={details.six}>6</option> : <option value={details.six}>6</option>}
+                          <label>Garage</label>
+                          <select
+                            className="form-control"
+                            name="garage"
+                            onChange={onChangeHandler}
+                          >
+                            <option disabled>0</option>
+                            {details.garage?.includes("1") ? (
+                              <option selected value={details.one}>
+                                1
+                              </option>
+                            ) : (
+                              <option value={details.one}>1</option>
+                            )}
+                            {details.garage?.includes("2") ? (
+                              <option selected value={details.two}>
+                                2
+                              </option>
+                            ) : (
+                              <option value={details.two}>2</option>
+                            )}
+                            {details.garage?.includes("3") ? (
+                              <option selected value={details.three}>
+                                3
+                              </option>
+                            ) : (
+                              <option value={details.three}>3</option>
+                            )}
+                            {details.garage?.includes("4") ? (
+                              <option selected value={details.four}>
+                                4
+                              </option>
+                            ) : (
+                              <option value={details.four}>4</option>
+                            )}
+                            {details.garage?.includes("5") ? (
+                              <option selected value={details.five}>
+                                5
+                              </option>
+                            ) : (
+                              <option value={details.five}>5</option>
+                            )}
+                            {details.garage?.includes("6") ? (
+                              <option selected value={details.six}>
+                                6
+                              </option>
+                            ) : (
+                              <option value={details.six}>6</option>
+                            )}
                           </select>
                         </div>
                         <div className="form-group col-sm-4">
-                          <label >Balcony</label>
-                          <select className="form-control" name="balcony" onChange={onChangeHandler}>
-                          <option  disabled>0</option>
-                            {details.balcony?.includes("1") ? <option selected value={details.one}>1</option> : <option value={details.one}>1</option>}
-                            {details.balcony?.includes("2") ? <option selected value={details.two}>2</option> : <option value={details.two}>2</option>}
-                            {details.balcony?.includes("3") ? <option selected value={details.three}>3</option> : <option value={details.three}>3</option>}
-                            {details.balcony?.includes("4") ? <option selected value={details.four}>4</option> : <option value={details.four}>4</option>}
-                            {details.balcony?.includes("5") ? <option selected value={details.five}>5</option> : <option value={details.five}>5</option>}
-                            {details.balcony?.includes("6") ? <option selected value={details.six}>6</option> : <option value={details.six}>6</option>}
+                          <label>Balcony</label>
+                          <select
+                            className="form-control"
+                            name="balcony"
+                            onChange={onChangeHandler}
+                          >
+                            <option disabled>0</option>
+                            {details.balcony?.includes("1") ? (
+                              <option selected value={details.one}>
+                                1
+                              </option>
+                            ) : (
+                              <option value={details.one}>1</option>
+                            )}
+                            {details.balcony?.includes("2") ? (
+                              <option selected value={details.two}>
+                                2
+                              </option>
+                            ) : (
+                              <option value={details.two}>2</option>
+                            )}
+                            {details.balcony?.includes("3") ? (
+                              <option selected value={details.three}>
+                                3
+                              </option>
+                            ) : (
+                              <option value={details.three}>3</option>
+                            )}
+                            {details.balcony?.includes("4") ? (
+                              <option selected value={details.four}>
+                                4
+                              </option>
+                            ) : (
+                              <option value={details.four}>4</option>
+                            )}
+                            {details.balcony?.includes("5") ? (
+                              <option selected value={details.five}>
+                                5
+                              </option>
+                            ) : (
+                              <option value={details.five}>5</option>
+                            )}
+                            {details.balcony?.includes("6") ? (
+                              <option selected value={details.six}>
+                                6
+                              </option>
+                            ) : (
+                              <option value={details.six}>6</option>
+                            )}
                           </select>
                         </div>
                         <div className="form-group col-sm-4">
                           <label>Area</label>
-                          <input type="number" className="form-control" name="area" value={details.area} onChange={onChangeHandler} placeholder="85 sq ft" />
+                          <input
+                            type="number"
+                            className="form-control"
+                            name="area"
+                            value={details.area}
+                            onChange={onChangeHandler}
+                            placeholder="85 sq ft"
+                          />
                         </div>
                         <div className="form-group col-sm-4">
                           <label>Price</label>
-                          <input type="number" className="form-control" name="price" value={details.price} onChange={onChangeHandler} placeholder="₹3000" />
+                          <input
+                            type="number"
+                            className="form-control"
+                            name="price"
+                            value={details.price}
+                            onChange={onChangeHandler}
+                            placeholder="₹3000"
+                          />
                         </div>
                         <div className="form-group col-sm-4">
                           <label>Minimum Hold Period</label>
-                          <input type="number" className="form-control" placeholder="₹2800" name="minimumHoldPeriod" value={details.minimumHoldPeriod} onChange={onChangeHandler} required="" />
+                          <input
+                            type="number"
+                            className="form-control"
+                            placeholder="₹2800"
+                            name="minimumHoldPeriod"
+                            value={details.minimumHoldPeriod}
+                            onChange={onChangeHandler}
+                            required=""
+                          />
                         </div>
                         {/* <div className="form-group col-sm-4">
                               <label>Agencies</label>
@@ -659,25 +1004,67 @@ function EditProperty() {
                               </div>
                             </div> */}
                         <div className="form-group col-sm-4">
-                          <label >Agencies</label>
-                          <select className="form-control" name="agencies" onChange={onChangeHandler}>
-                          <option  disabled>Agencies</option>
-                            {details.agencies?.includes("Blue Sky") ? <option selected value={details.blueSky}>Blue Sky</option> : <option value={details.blueSky}>Blue Sky</option>}
-                            {details.agencies?.includes("Zephyr") ? <option selected value={details.zephyr}>Zephyr</option> : <option value={details.blueSky}>Zephyr</option>}
-                            {details.agencies?.includes("Premiere") ? <option selected value={details.premiere}>Premiere</option> : <option value={details.premiere}>Premiere</option>}
+                          <label>Agencies</label>
+                          <select
+                            className="form-control"
+                            name="agencies"
+                            onChange={onChangeHandler}
+                          >
+                            <option disabled>Agencies</option>
+                            {details.agencies?.includes("Blue Sky") ? (
+                              <option selected value={details.blueSky}>
+                                Blue Sky
+                              </option>
+                            ) : (
+                              <option value={details.blueSky}>Blue Sky</option>
+                            )}
+                            {details.agencies?.includes("Zephyr") ? (
+                              <option selected value={details.zephyr}>
+                                Zephyr
+                              </option>
+                            ) : (
+                              <option value={details.blueSky}>Zephyr</option>
+                            )}
+                            {details.agencies?.includes("Premiere") ? (
+                              <option selected value={details.premiere}>
+                                Premiere
+                              </option>
+                            ) : (
+                              <option value={details.premiere}>Premiere</option>
+                            )}
                           </select>
                         </div>
                         <div className="form-group col-sm-12">
                           <label>Description</label>
-                          <textarea className="form-control" name="description" value={details.description} onChange={onChangeHandler} rows="4"></textarea>
+                          <textarea
+                            className="form-control"
+                            name="description"
+                            value={details.description}
+                            onChange={onChangeHandler}
+                            rows="4"
+                          ></textarea>
                         </div>
                         <div className="form-group col-sm-6">
                           <label>Address</label>
-                          <input type="text" className="form-control" name="address" value={details.address || ""} onChange={onChangeHandler} placeholder="Address of your property" />
+                          <input
+                            type="text"
+                            className="form-control"
+                            name="address"
+                            value={details.address || ""}
+                            onChange={onChangeHandler}
+                            placeholder="Address of your property"
+                          />
                         </div>
                         <div className="form-group col-sm-6">
                           <label>Zip code</label>
-                          <input type="number" className="form-control" name="pincode" value={details.pincode} onChange={onChangeHandler} placeholder="39702" />
+                          <input
+                            type="number"
+                            className="form-control"
+                            name="pincode"
+                            value={details.pincode}
+                            onChange={onChangeHandler}
+                            placeholder="39702"
+                          />
                         </div>
                         {/* <div className="form-group col-sm-4">
                               <label>Any Country</label>
@@ -692,9 +1079,13 @@ function EditProperty() {
                               </div> 
                             </div>*/}
                         <div className="form-group col-sm-4">
-                          <label >Country</label>
-                          <select className="form-control" name="country" onChange={onChangeHandler}>
-                          <option  disabled>Country</option>
+                          <label>Country</label>
+                          <select
+                            className="form-control"
+                            name="country"
+                            onChange={onChangeHandler}
+                          >
+                            <option disabled>Country</option>
                             <option value={details.india}>India</option>
                             <option value={details.brazil}>Brazil</option>
                             <option value={details.usa}>USA</option>
@@ -714,9 +1105,13 @@ function EditProperty() {
                               </div>
                             </div> */}
                         <div className="form-group col-sm-4">
-                          <label >City</label>
-                          <select className="form-control" name="city" onChange={onChangeHandler}>
-                          <option  disabled>City</option>
+                          <label>City</label>
+                          <select
+                            className="form-control"
+                            name="city"
+                            onChange={onChangeHandler}
+                          >
+                            <option disabled>City</option>
                             <option value={details.bangalore}>Bangalore</option>
                             <option value={details.newDelhi}>New Delhi</option>
                             <option value={details.lucknow}>Luknow</option>
@@ -725,15 +1120,26 @@ function EditProperty() {
                         </div>
                         <div className="form-group col-sm-4">
                           <label>Landmark</label>
-                          <input type="text" className="form-control" name="landmark" value={details.landmark} onChange={onChangeHandler} placeholder="landmark place name" />
+                          <input
+                            type="text"
+                            className="form-control"
+                            name="landmark"
+                            value={details.landmark}
+                            onChange={onChangeHandler}
+                            placeholder="landmark place name"
+                          />
                         </div>
                       </form>
                       <div className="dropzone-admin">
                         <label>Property Images</label>
-                        <form className="dropzone" id="multiFileUpload" style={{ position: "relative" }}
+                        <form
+                          className="dropzone"
+                          id="multiFileUpload"
+                          style={{ position: "relative" }}
                           onChange={(event) => {
                             setPropertyImage(event.target.files);
-                          }}>
+                          }}
+                        >
                           <input
                             type="file"
                             multiple
@@ -747,19 +1153,22 @@ function EditProperty() {
                             }}
                           />
 
-                          <div className="dz-message needsclick"><i className="fas fa-cloud-upload-alt"></i>
+                          <div className="dz-message needsclick">
+                            <i className="fas fa-cloud-upload-alt"></i>
                             <h6>Click to choose file</h6>
                           </div>
                         </form>
-
                       </div>
                       <div className="dropzone-admin">
                         <label>Floorplan</label>
-                        <form className="dropzone" id="multiFileUpload" style={{ position: "relative" }}
+                        <form
+                          className="dropzone"
+                          id="multiFileUpload"
+                          style={{ position: "relative" }}
                           onChange={(event) => {
                             setFloorPlanImage(event.target.files);
-                          }}>
-
+                          }}
+                        >
                           <input
                             type="file"
                             multiple
@@ -772,12 +1181,11 @@ function EditProperty() {
                               opacity: "0",
                             }}
                           />
-                          <div className="dz-message needsclick"><i className="fas fa-cloud-upload-alt"></i>
+                          <div className="dz-message needsclick">
+                            <i className="fas fa-cloud-upload-alt"></i>
                             <h6>Click to choose file</h6>
                           </div>
-
                         </form>
-
                       </div>
                       <form className="row gx-3">
                         {/* <div className="form-group col-sm-12">
@@ -787,83 +1195,292 @@ function EditProperty() {
                         <div className="form-group col-sm-12 mb-0">
                           <label>Additional features</label>
                           <div className="additional-checkbox">
-                            {details.additionalFeatures.includes('Emergency Exit') ?
+                            {details.additionalFeatures.includes(
+                              "Emergency Exit"
+                            ) ? (
                               <label for="chk-ani">
-                                <input className="checkbox_animated color-4" id="chk-ani" type="checkbox" name="additionalFeatures" value="Emergency Exit" onChange={onChangeHandler} checked /> Emergency Exit
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Emergency Exit"
+                                  onChange={onChangeHandler}
+                                  checked
+                                />{" "}
+                                Emergency Exit
                               </label>
-                              :
+                            ) : (
                               <label for="chk-ani">
-                                <input className="checkbox_animated color-4" id="chk-ani" type="checkbox" name="additionalFeatures" value="Emergency Exit" onChange={onChangeHandler} /> Emergency Exit
-                              </label>}
-                            {details.additionalFeatures.includes('CCTV') ?
-                              <label for="chk-ani1">
-                                <input className="checkbox_animated color-4" id="chk-ani1" type="checkbox" name="additionalFeatures" value="CCTV" onChange={onChangeHandler} checked /> CCTV
-                              </label> :
-                              <label for="chk-ani1">
-                                <input className="checkbox_animated color-4" id="chk-ani1" type="checkbox" name="additionalFeatures" value="CCTV" onChange={onChangeHandler} /> CCTV
-                              </label>}
-                            {details.additionalFeatures.includes('Free Wi-Fi') ?
-                              <label for="chk-ani2">
-                                <input className="checkbox_animated color-4" id="chk-ani2" type="checkbox" name="additionalFeatures" value="Free Wi-fi" onChange={onChangeHandler} checked /> Free Wi-Fi
-                              </label> :
-                              <label for="chk-ani2">
-                                <input className="checkbox_animated color-4" id="chk-ani2" type="checkbox" name="additionalFeatures" value="Free Wi-fi" onChange={onChangeHandler} /> Free Wi-Fi
-                              </label>}
-                            {details.additionalFeatures.includes('Free Parking in the Area') ?
-                              <label for="chk-ani3">
-                                <input className="checkbox_animated color-4" id="chk-ani3" type="checkbox" name="additionalFeatures" value="Free parking" onChange={onChangeHandler} checked />  Free Parking In The Area
-                              </label> :
-                              <label for="chk-ani3">
-                                <input className="checkbox_animated color-4" id="chk-ani3" type="checkbox" name="additionalFeatures" value="Free parking" onChange={onChangeHandler} />  Free Parking In The Area
-                              </label>}
-                            {details.additionalFeatures.includes('Air Conditioning') ?
-                              <label for="chk-ani4">
-                                <input className="checkbox_animated color-4" id="chk-ani4" type="checkbox" name="additionalFeatures" value="Air Conditioning" onChange={onChangeHandler} checked />  Air Conditioning
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Emergency Exit"
+                                  onChange={onChangeHandler}
+                                />{" "}
+                                Emergency Exit
                               </label>
-                              :
+                            )}
+                            {details.additionalFeatures.includes("CCTV") ? (
+                              <label for="chk-ani1">
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani1"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="CCTV"
+                                  onChange={onChangeHandler}
+                                  checked
+                                />{" "}
+                                CCTV
+                              </label>
+                            ) : (
+                              <label for="chk-ani1">
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani1"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="CCTV"
+                                  onChange={onChangeHandler}
+                                />{" "}
+                                CCTV
+                              </label>
+                            )}
+                            {details.additionalFeatures.includes(
+                              "Free Wi-Fi"
+                            ) ? (
+                              <label for="chk-ani2">
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani2"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Free Wi-fi"
+                                  onChange={onChangeHandler}
+                                  checked
+                                />{" "}
+                                Free Wi-Fi
+                              </label>
+                            ) : (
+                              <label for="chk-ani2">
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani2"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Free Wi-fi"
+                                  onChange={onChangeHandler}
+                                />{" "}
+                                Free Wi-Fi
+                              </label>
+                            )}
+                            {details.additionalFeatures.includes(
+                              "Free Parking in the Area"
+                            ) ? (
+                              <label for="chk-ani3">
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani3"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Free parking"
+                                  onChange={onChangeHandler}
+                                  checked
+                                />{" "}
+                                Free Parking In The Area
+                              </label>
+                            ) : (
+                              <label for="chk-ani3">
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani3"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Free parking"
+                                  onChange={onChangeHandler}
+                                />{" "}
+                                Free Parking In The Area
+                              </label>
+                            )}
+                            {details.additionalFeatures.includes(
+                              "Air Conditioning"
+                            ) ? (
                               <label for="chk-ani4">
-                                <input className="checkbox_animated color-4" id="chk-ani4" type="checkbox" name="additionalFeatures" value="Air Conditioning" onChange={onChangeHandler} />  Air Conditioning
-                              </label>}
-                            {details.additionalFeatures.includes('Security Guard') ?
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani4"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Air Conditioning"
+                                  onChange={onChangeHandler}
+                                  checked
+                                />{" "}
+                                Air Conditioning
+                              </label>
+                            ) : (
+                              <label for="chk-ani4">
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani4"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Air Conditioning"
+                                  onChange={onChangeHandler}
+                                />{" "}
+                                Air Conditioning
+                              </label>
+                            )}
+                            {details.additionalFeatures.includes(
+                              "Security Guard"
+                            ) ? (
                               <label for="chk-ani5">
-                                <input className="checkbox_animated color-4" id="chk-ani5" type="checkbox" name="additionalFeatures" value="Security Guard" onChange={onChangeHandler} checked />  Security Guard
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani5"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Security Guard"
+                                  onChange={onChangeHandler}
+                                  checked
+                                />{" "}
+                                Security Guard
                               </label>
-                              : <label for="chk-ani5">
-                                <input className="checkbox_animated color-4" id="chk-ani5" type="checkbox" name="additionalFeatures" value="Security Guard" onChange={onChangeHandler} />  Security Guard
-                              </label>}
-                            {details.additionalFeatures.includes('Terrace') ?
+                            ) : (
+                              <label for="chk-ani5">
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani5"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Security Guard"
+                                  onChange={onChangeHandler}
+                                />{" "}
+                                Security Guard
+                              </label>
+                            )}
+                            {details.additionalFeatures.includes("Terrace") ? (
                               <label for="chk-ani6">
-                                <input className="checkbox_animated color-4" id="chk-ani6" type="checkbox" name="additionalFeatures" value="Terrace" onChange={onChangeHandler} checked />  Terrace
-                              </label> :
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani6"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Terrace"
+                                  onChange={onChangeHandler}
+                                  checked
+                                />{" "}
+                                Terrace
+                              </label>
+                            ) : (
                               <label for="chk-ani6">
-                                <input className="checkbox_animated color-4" id="chk-ani6" type="checkbox" name="additionalFeatures" value="Terrace" onChange={onChangeHandler} />  Terrace
-                              </label>}
-                            {details.additionalFeatures.includes('Laundry Service') ?
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani6"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Terrace"
+                                  onChange={onChangeHandler}
+                                />{" "}
+                                Terrace
+                              </label>
+                            )}
+                            {details.additionalFeatures.includes(
+                              "Laundry Service"
+                            ) ? (
                               <label for="chk-ani7">
-                                <input className="checkbox_animated color-4" id="chk-ani7" type="checkbox" name="additionalFeatures" value="Laundry Service" onChange={onChangeHandler} checked />  Laundry Service
-                              </label> :
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani7"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Laundry Service"
+                                  onChange={onChangeHandler}
+                                  checked
+                                />{" "}
+                                Laundry Service
+                              </label>
+                            ) : (
                               <label for="chk-ani7">
-                                <input className="checkbox_animated color-4" id="chk-ani7" type="checkbox" name="additionalFeatures" value="Laundry Service" onChange={onChangeHandler} />  Laundry Service
-                              </label>}
-                            {details.additionalFeatures.includes('Elevator Lift') ?
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani7"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Laundry Service"
+                                  onChange={onChangeHandler}
+                                />{" "}
+                                Laundry Service
+                              </label>
+                            )}
+                            {details.additionalFeatures.includes(
+                              "Elevator Lift"
+                            ) ? (
                               <label for="chk-ani8">
-                                <input className="checkbox_animated color-4" id="chk-ani8" type="checkbox" name="additionalFeatures" value="Elevator Lift" onChange={onChangeHandler} checked />  Elevator Lift
-                              </label> :
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani8"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Elevator Lift"
+                                  onChange={onChangeHandler}
+                                  checked
+                                />{" "}
+                                Elevator Lift
+                              </label>
+                            ) : (
                               <label for="chk-ani8">
-                                <input className="checkbox_animated color-4" id="chk-ani8" type="checkbox" name="additionalFeatures" value="Elevator Lift" onChange={onChangeHandler} />  Elevator Lift
-                              </label>}
-                            {details.additionalFeatures.includes('Balcony') ?
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani8"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Elevator Lift"
+                                  onChange={onChangeHandler}
+                                />{" "}
+                                Elevator Lift
+                              </label>
+                            )}
+                            {details.additionalFeatures.includes("Balcony") ? (
                               <label for="chk-ani9">
-                                <input className="checkbox_animated color-4" id="chk-ani9" type="checkbox" name="additionalFeatures" value="Balcony" onChange={onChangeHandler} checked />  Balcony
-                              </label> :
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani9"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Balcony"
+                                  onChange={onChangeHandler}
+                                  checked
+                                />{" "}
+                                Balcony
+                              </label>
+                            ) : (
                               <label for="chk-ani9">
-                                <input className="checkbox_animated color-4" id="chk-ani9" type="checkbox" name="additionalFeatures" value="Balcony" onChange={onChangeHandler} />  Balcony
-                              </label>}
+                                <input
+                                  className="checkbox_animated color-4"
+                                  id="chk-ani9"
+                                  type="checkbox"
+                                  name="additionalFeatures"
+                                  value="Balcony"
+                                  onChange={onChangeHandler}
+                                />{" "}
+                                Balcony
+                              </label>
+                            )}
                           </div>
                         </div>
                         <div className="form-btn col-sm-12">
                           {/* <button type="button" className="btn btn-pill btn-gradient color-4 " style={{ width: "100px" }} onClick={() => {uploadFloorPlan(); uploadProperty();}}>Upload</button> */}
-                          <button type="submit" className="btn btn-pill btn-gradient color-4 " style={{ width: "150px" }} onClick={submitHandler}>Update</button>
+                          <button
+                            type="submit"
+                            className="btn btn-pill btn-gradient color-4 "
+                            style={{ width: "150px" }}
+                            onClick={submitHandler}
+                          >
+                            Update
+                          </button>
                         </div>
                       </form>
                     </div>
@@ -872,7 +1489,6 @@ function EditProperty() {
               </div>
             </div>
             {/* <!-- Container-fluid end --> */}
-
           </div>
 
           {/* <!-- footer start --> */}
@@ -880,10 +1496,14 @@ function EditProperty() {
             <div className="container-fluid">
               <div className="row">
                 <div className="col-md-6 footer-copyright">
-                  <p className="mb-0">Copyright 2022 © Crowdpe All rights reserved.</p>
+                  <p className="mb-0">
+                    Copyright 2022 © Crowdpe All rights reserved.
+                  </p>
                 </div>
                 <div className="col-md-6">
-                  <p className="float-end mb-0">Developed with  <i className="fa fa-heart font-danger"></i></p>
+                  <p className="float-end mb-0">
+                    Developed with <i className="fa fa-heart font-danger"></i>
+                  </p>
                 </div>
               </div>
             </div>
@@ -951,10 +1571,8 @@ function EditProperty() {
             </div>
           </div> */}
       {/* <!-- customizer end --> */}
-
-    </div >
-  )
+    </div>
+  );
 }
 
-
-export default EditProperty
+export default EditProperty;

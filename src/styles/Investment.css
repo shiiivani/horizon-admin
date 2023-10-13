@@ -1,0 +1,7 @@
+.form-btn .disabled {
+    opacity: 50%;
+}
+
+.alert-success {
+    max-width: 100% !important
+}

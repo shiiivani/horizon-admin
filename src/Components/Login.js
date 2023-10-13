@@ -10,6 +10,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
+  const [seePassword, setSeePassword] = useState(false);
   const navigate = useNavigate();
 
   const signIn = async (e) => {
@@ -17,7 +18,7 @@ const Login = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log(userCredential);
-        const docref = doc(db, "users", userCredential.user.uid);
+        const docref = doc(db, "adminUser", userCredential.user.uid);
         getDoc(docref)
           .then((doc) => {
             console.log(doc);
@@ -37,7 +38,7 @@ const Login = () => {
       .catch((err) => {
         if (err.code === "auth/wrong-password") {
           setErr("Wrong Password");
-          setTimeout(() => setErr(""), 3000)
+          setTimeout(() => setErr(""), 3000);
         } else if (err.code === "auth/invalid-email") {
           setErr("Invalid Email");
         } else if (err.code === "auth/user-not-found") {
@@ -133,7 +134,7 @@ const Login = () => {
                         </div>
                       </div>
                       <input
-                        type="password"
+                        type={seePassword ? "text" : "password"}
                         id="pwd-input"
                         className="form-control"
                         name="password"
@@ -143,8 +144,16 @@ const Login = () => {
                         required
                       />
                       <div className="input-group-apend">
-                        <div className="input-group-text">
-                          <i id="pwd-icon" class="far fa-eye-slash"></i>
+                        <div
+                          className="input-group-text"
+                          onClick={() => setSeePassword(!seePassword)}
+                        >
+                          <i
+                            id="pwd-icon"
+                            className={
+                              seePassword ? "far fa-eye" : "far fa-eye-slash"
+                            }
+                          ></i>
                         </div>
                       </div>
                     </div>
