@@ -1159,8 +1159,7 @@ function AdminPanel() {
                 </div>
                 <div className="col-md-6">
                   <p className="float-end mb-0">
-                    Developed with <i className="fa fa-heart font-danger"></i>{" "}
-                    by Shivani
+                    Developed with <i className="fa fa-heart font-danger"></i>
                   </p>
                 </div>
               </div>
