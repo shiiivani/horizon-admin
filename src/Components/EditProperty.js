@@ -141,7 +141,7 @@ function EditProperty() {
         floorurlarray,
         garage: Number(details.garage),
         halls: Number(details.halls),
-        id,
+        // id,
         landmark: details.landmark,
         listingStatus: details.listingStatus,
         maxRooms: Number(details.maxRooms),
@@ -259,7 +259,7 @@ function EditProperty() {
                     </a>
                   </li> */}
                   <li className="sidebar-item">
-                    <a href="/admin-panel" className="sidebar-link active">
+                    <a href="/admin-panel" className="sidebar-link">
                       <Grid />
                       <span>Add property</span>
                     </a>
@@ -293,9 +293,15 @@ function EditProperty() {
                         </ul> */}
 
                   <li className="sidebar-item" style={{ cursor: "pointer" }}>
-                    <a href="/property-list" className="sidebar-link">
+                    <a href="/property-list" className="sidebar-link active">
                       <Layout />
                       <span>Property List</span>
+                    </a>
+                  </li>
+                  <li className="sidebar-item" style={{ cursor: "pointer" }}>
+                    <a href="/investment" className="sidebar-link">
+                      <Layout />
+                      <span>Investment</span>
                     </a>
                   </li>
                   {/*<ul className="nav-submenu menu-content">
@@ -626,42 +632,48 @@ function EditProperty() {
                             onChange={onChangeHandler}
                           >
                             <option disabled>0</option>
-                            {details.maxRooms?.includes("1") ? (
+                            {Array.isArray(details.maxRooms) &&
+                            details.maxRooms.includes("1") ? (
                               <option selected value={details.one}>
                                 1
                               </option>
                             ) : (
                               <option value={details.one}>1</option>
                             )}
-                            {details.maxRooms?.includes("2") ? (
+                            {Array.isArray(details.maxRooms) &&
+                            details.maxRooms.includes("2") ? (
                               <option selected value={details.two}>
                                 2
                               </option>
                             ) : (
                               <option value={details.two}>2</option>
                             )}
-                            {details.maxRooms?.includes("3") ? (
+                            {Array.isArray(details.maxRooms) &&
+                            details.maxRooms.includes("3") ? (
                               <option selected value={details.three}>
                                 3
                               </option>
                             ) : (
                               <option value={details.three}>3</option>
                             )}
-                            {details.maxRooms?.includes("4") ? (
+                            {Array.isArray(details.maxRooms) &&
+                            details.maxRooms.includes("4") ? (
                               <option selected value={details.four}>
                                 4
                               </option>
                             ) : (
                               <option value={details.four}>4</option>
                             )}
-                            {details.maxRooms?.includes("5") ? (
+                            {Array.isArray(details.maxRooms) &&
+                            details.maxRooms.includes("5") ? (
                               <option selected value={details.five}>
                                 5
                               </option>
                             ) : (
                               <option value={details.five}>5</option>
                             )}
-                            {details.maxRooms?.includes("6") ? (
+                            {Array.isArray(details.maxRooms) &&
+                            details.maxRooms.includes("6") ? (
                               <option selected value={details.six}>
                                 6
                               </option>
@@ -678,42 +690,48 @@ function EditProperty() {
                             onChange={onChangeHandler}
                           >
                             <option disabled>0</option>
-                            {details.halls?.includes("1") ? (
+                            {Array.isArray(details.halls) &&
+                            details.halls.includes("1") ? (
                               <option selected value={details.one}>
                                 1
                               </option>
                             ) : (
                               <option value={details.one}>1</option>
                             )}
-                            {details.halls?.includes("2") ? (
+                            {Array.isArray(details.halls) &&
+                            details.halls.includes("2") ? (
                               <option selected value={details.two}>
                                 2
                               </option>
                             ) : (
                               <option value={details.two}>2</option>
                             )}
-                            {details.halls?.includes("3") ? (
+                            {Array.isArray(details.halls) &&
+                            details.halls.includes("3") ? (
                               <option selected value={details.three}>
                                 3
                               </option>
                             ) : (
                               <option value={details.three}>3</option>
                             )}
-                            {details.halls?.includes("4") ? (
+                            {Array.isArray(details.halls) &&
+                            details.halls.includes("4") ? (
                               <option selected value={details.four}>
                                 4
                               </option>
                             ) : (
                               <option value={details.four}>4</option>
                             )}
-                            {details.halls?.includes("5") ? (
+                            {Array.isArray(details.halls) &&
+                            details.halls.includes("5") ? (
                               <option selected value={details.five}>
                                 5
                               </option>
                             ) : (
                               <option value={details.five}>5</option>
                             )}
-                            {details.halls?.includes("6") ? (
+                            {Array.isArray(details.halls) &&
+                            details.halls.includes("6") ? (
                               <option selected value={details.six}>
                                 6
                               </option>
@@ -743,42 +761,48 @@ function EditProperty() {
                             onChange={onChangeHandler}
                           >
                             <option disabled>0</option>
-                            {details.beds?.includes("1") ? (
+                            {Array.isArray(details.beds) &&
+                            details.beds.includes("1") ? (
                               <option selected value={details.one}>
                                 1
                               </option>
                             ) : (
                               <option value={details.one}>1</option>
                             )}
-                            {details.beds?.includes("2") ? (
+                            {Array.isArray(details.beds) &&
+                            details.beds.includes("2") ? (
                               <option selected value={details.two}>
                                 2
                               </option>
                             ) : (
                               <option value={details.two}>2</option>
                             )}
-                            {details.beds?.includes("3") ? (
+                            {Array.isArray(details.beds) &&
+                            details.beds.includes("3") ? (
                               <option selected value={details.three}>
                                 3
                               </option>
                             ) : (
                               <option value={details.three}>3</option>
                             )}
-                            {details.beds?.includes("4") ? (
+                            {Array.isArray(details.beds) &&
+                            details.beds.includes("4") ? (
                               <option selected value={details.four}>
                                 4
                               </option>
                             ) : (
                               <option value={details.four}>4</option>
                             )}
-                            {details.beds?.includes("5") ? (
+                            {Array.isArray(details.beds) &&
+                            details.beds.includes("5") ? (
                               <option selected value={details.five}>
                                 5
                               </option>
                             ) : (
                               <option value={details.five}>5</option>
                             )}
-                            {details.beds?.includes("6") ? (
+                            {Array.isArray(details.beds) &&
+                            details.beds.includes("6") ? (
                               <option selected value={details.six}>
                                 6
                               </option>
@@ -808,42 +832,48 @@ function EditProperty() {
                             onChange={onChangeHandler}
                           >
                             <option disabled>0</option>
-                            {details.baths?.includes("1") ? (
+                            {Array.isArray(details.baths) &&
+                            details.baths.includes("1") ? (
                               <option selected value={details.one}>
                                 1
                               </option>
                             ) : (
                               <option value={details.one}>1</option>
                             )}
-                            {details.baths?.includes("2") ? (
+                            {Array.isArray(details.baths) &&
+                            details.baths.includes("2") ? (
                               <option selected value={details.two}>
                                 2
                               </option>
                             ) : (
                               <option value={details.two}>2</option>
                             )}
-                            {details.baths?.includes("3") ? (
+                            {Array.isArray(details.baths) &&
+                            details.baths.includes("3") ? (
                               <option selected value={details.three}>
                                 3
                               </option>
                             ) : (
                               <option value={details.three}>3</option>
                             )}
-                            {details.baths?.includes("4") ? (
+                            {Array.isArray(details.baths) &&
+                            details.baths.includes("4") ? (
                               <option selected value={details.four}>
                                 4
                               </option>
                             ) : (
                               <option value={details.four}>4</option>
                             )}
-                            {details.baths?.includes("5") ? (
+                            {Array.isArray(details.baths) &&
+                            details.baths.includes("5") ? (
                               <option selected value={details.five}>
                                 5
                               </option>
                             ) : (
                               <option value={details.five}>5</option>
                             )}
-                            {details.baths?.includes("6") ? (
+                            {Array.isArray(details.baths) &&
+                            details.baths.includes("6") ? (
                               <option selected value={details.six}>
                                 6
                               </option>
@@ -860,42 +890,48 @@ function EditProperty() {
                             onChange={onChangeHandler}
                           >
                             <option disabled>0</option>
-                            {details.garage?.includes("1") ? (
+                            {Array.isArray(details.garage) &&
+                            details.garage.includes("1") ? (
                               <option selected value={details.one}>
                                 1
                               </option>
                             ) : (
                               <option value={details.one}>1</option>
                             )}
-                            {details.garage?.includes("2") ? (
+                            {Array.isArray(details.garage) &&
+                            details.garage.includes("2") ? (
                               <option selected value={details.two}>
                                 2
                               </option>
                             ) : (
                               <option value={details.two}>2</option>
                             )}
-                            {details.garage?.includes("3") ? (
+                            {Array.isArray(details.garage) &&
+                            details.garage.includes("3") ? (
                               <option selected value={details.three}>
                                 3
                               </option>
                             ) : (
                               <option value={details.three}>3</option>
                             )}
-                            {details.garage?.includes("4") ? (
+                            {Array.isArray(details.garage) &&
+                            details.garage.includes("4") ? (
                               <option selected value={details.four}>
                                 4
                               </option>
                             ) : (
                               <option value={details.four}>4</option>
                             )}
-                            {details.garage?.includes("5") ? (
+                            {Array.isArray(details.garage) &&
+                            details.garage.includes("5") ? (
                               <option selected value={details.five}>
                                 5
                               </option>
                             ) : (
                               <option value={details.five}>5</option>
                             )}
-                            {details.garage?.includes("6") ? (
+                            {Array.isArray(details.garage) &&
+                            details.garage.includes("6") ? (
                               <option selected value={details.six}>
                                 6
                               </option>
@@ -912,42 +948,48 @@ function EditProperty() {
                             onChange={onChangeHandler}
                           >
                             <option disabled>0</option>
-                            {details.balcony?.includes("1") ? (
+                            {Array.isArray(details.balcony) &&
+                            details.balcony.includes("1") ? (
                               <option selected value={details.one}>
                                 1
                               </option>
                             ) : (
                               <option value={details.one}>1</option>
                             )}
-                            {details.balcony?.includes("2") ? (
+                            {Array.isArray(details.balcony) &&
+                            details.balcony.includes("2") ? (
                               <option selected value={details.two}>
                                 2
                               </option>
                             ) : (
                               <option value={details.two}>2</option>
                             )}
-                            {details.balcony?.includes("3") ? (
+                            {Array.isArray(details.balcony) &&
+                            details.balcony.includes("3") ? (
                               <option selected value={details.three}>
                                 3
                               </option>
                             ) : (
                               <option value={details.three}>3</option>
                             )}
-                            {details.balcony?.includes("4") ? (
+                            {Array.isArray(details.balcony) &&
+                            details.balcony.includes("4") ? (
                               <option selected value={details.four}>
                                 4
                               </option>
                             ) : (
                               <option value={details.four}>4</option>
                             )}
-                            {details.balcony?.includes("5") ? (
+                            {Array.isArray(details.balcony) &&
+                            details.balcony.includes("5") ? (
                               <option selected value={details.five}>
                                 5
                               </option>
                             ) : (
                               <option value={details.five}>5</option>
                             )}
-                            {details.balcony?.includes("6") ? (
+                            {Array.isArray(details.balcony) &&
+                            details.balcony.includes("6") ? (
                               <option selected value={details.six}>
                                 6
                               </option>
@@ -1278,7 +1320,7 @@ function EditProperty() {
                               </label>
                             )}
                             {details.additionalFeatures.includes(
-                              "Free Parking in the Area"
+                              "Free parking"
                             ) ? (
                               <label for="chk-ani3">
                                 <input
@@ -1290,7 +1332,7 @@ function EditProperty() {
                                   onChange={onChangeHandler}
                                   checked
                                 />{" "}
-                                Free Parking In The Area
+                                Free Parking
                               </label>
                             ) : (
                               <label for="chk-ani3">
@@ -1302,7 +1344,7 @@ function EditProperty() {
                                   value="Free parking"
                                   onChange={onChangeHandler}
                                 />{" "}
-                                Free Parking In The Area
+                                Free Parking
                               </label>
                             )}
                             {details.additionalFeatures.includes(
@@ -1502,7 +1544,8 @@ function EditProperty() {
                 </div>
                 <div className="col-md-6">
                   <p className="float-end mb-0">
-                    Developed with <i className="fa fa-heart font-danger"></i>
+                    Developed with <i className="fa fa-heart font-danger"></i>{" "}
+                    by Shivani
                   </p>
                 </div>
               </div>

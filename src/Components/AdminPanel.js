@@ -24,6 +24,10 @@ import {
   getDocs,
   doc,
   updateDoc,
+  getDoc,
+  setDoc,
+  where,
+  query,
 } from "firebase/firestore";
 import { storage } from "../FirebaseAuth/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
@@ -31,7 +35,6 @@ import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../FirebaseAuth/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { useAuthState } from "react-firebase-hooks/auth";
 import "../styles/AdminPanel.css";
 
 function AdminPanel() {
@@ -57,18 +60,32 @@ function AdminPanel() {
     propertyType: "",
     propertyName: "",
   });
-  const [err, setErr] = useState(false);
-  const [floorUrl, setFloorUrl] = useState("");
-  const [url, setUrl] = useState([]);
   const [propertyImage, setPropertyImage] = useState("");
   const [floorPlanImage, setFloorPlanImage] = useState("");
   const navigate = useNavigate();
-  const [id, setId] = useState(1);
+  const [admin, setAdmin] = useState([]);
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
         navigate("/admin-panel");
+
+        try {
+          const userDocsRef = collection(db, "adminUser");
+          const userDocsQuery = query(
+            userDocsRef,
+            where("isAdmin", "==", "true")
+          );
+          let list = [];
+          const userDocsSnapshot = await getDocs(userDocsQuery);
+
+          userDocsSnapshot.forEach((doc) => {
+            list.push({ ...doc.data() });
+          });
+          setAdmin(list);
+        } catch (error) {
+          console.error("Error fetching user documents:", error);
+        }
       } else {
         navigate("/login");
       }
@@ -92,26 +109,6 @@ function AdminPanel() {
         ...details,
         [event.target.name]: event.target.value,
       }));
-    }
-  };
-
-  const getNextId = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "propertyDetails"));
-      const totalDocs = querySnapshot.size;
-
-      // Assuming your IDs start from 1
-      const nextId = totalDocs + 1;
-
-      // Set the state using setId
-      setId(nextId);
-
-      // Return the calculated nextId
-      return nextId;
-    } catch (error) {
-      console.error("Error getting document count:", error);
-      // Handle error as needed
-      return null;
     }
   };
 
@@ -148,9 +145,14 @@ function AdminPanel() {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      await getNextId();
       await uploadProperty();
       await uploadFloorPlan();
+      const docRef = doc(db, "totalNumberOfProperties", "tEIwoh99Xv26RmXG3D05");
+      const docSnapshot = await getDoc(docRef);
+      const currentCount = docSnapshot.exists()
+        ? docSnapshot.data().totalNumber
+        : 0;
+      await setDoc(docRef, { totalNumber: currentCount + 1 });
       const newDocRef = await addDoc(collection(db, "propertyDetails"), {
         additionalFeatures: details.additionalFeatures,
         address: details.address,
@@ -166,7 +168,7 @@ function AdminPanel() {
         floorurlarray,
         garage: Number(details.garage),
         halls: Number(details.halls),
-        id,
+        id: currentCount + 1,
         landmark: details.landmark,
         listingStatus: details.listingStatus,
         maxRooms: Number(details.maxRooms),
@@ -182,7 +184,7 @@ function AdminPanel() {
       await updateDoc(doc(db, "propertyDetails", newDocRef.id), {
         docId: newDocRef.id,
       });
-      // navigate("/property-list");
+      window.location.href = "/property-list";
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -282,18 +284,22 @@ function AdminPanel() {
               <div className="user-profile">
                 <div className="media">
                   <div className="change-pic">
-                    <img
+                    {/* <img
                       src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F3.png?alt=media&token=a43e2409-29f3-481a-a1cd-0923f60b69de"
                       className="img-fluid"
                       alt=""
-                    />
+                    /> */}
                   </div>
-                  <div className="media-body">
-                    <a>
-                      <h6>Zack Lee</h6>
-                    </a>
-                    <span className="font-roboto">zackle@gmail.com</span>
-                  </div>
+                  {admin.map((doc) => {
+                    return (
+                      <div className="media-body">
+                        <a>
+                          <h6>{doc.name}</h6>
+                        </a>
+                        <span className="font-roboto">{doc.email}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
               <div id="mainsidebar">
@@ -660,11 +666,12 @@ function AdminPanel() {
                         <div className="form-group col-sm-4">
                           <label>Max Rooms</label>
                           <select
+                            type="number"
                             className="form-control"
                             name="maxRooms"
                             onChange={onChangeHandler}
                           >
-                            <option selected disabled>
+                            <option value={details.zero} selected disabled>
                               0
                             </option>
                             <option value={details.one}>1</option>
@@ -678,11 +685,12 @@ function AdminPanel() {
                         <div className="form-group col-sm-4">
                           <label>Halls</label>
                           <select
+                            type="number"
                             className="form-control"
                             name="halls"
                             onChange={onChangeHandler}
                           >
-                            <option selected disabled>
+                            <option value={details.zero} selected disabled>
                               0
                             </option>
                             <option value={details.one}>1</option>
@@ -693,27 +701,15 @@ function AdminPanel() {
                             <option value={details.six}>6</option>
                           </select>
                         </div>
-                        {/* <div className="form-group col-sm-4">
-                          <label>Beds</label>
-                          <div className="dropdown">
-                            <span className="dropdown-toggle font-rubik" data-bs-toggle="dropdown"><span>1</span> <i className="fas fa-angle-down"></i></span>
-                            <div className="dropdown-menu text-start">
-                              <a className="dropdown-item" href="javascript:void(0)">2</a>
-                              <a className="dropdown-item" href="javascript:void(0)">3</a>
-                              <a className="dropdown-item" href="javascript:void(0)">4</a>
-                              <a className="dropdown-item" href="javascript:void(0)">5</a>
-                              <a className="dropdown-item" href="javascript:void(0)">6</a>
-                            </div>
-                          </div>
-                        </div> */}
                         <div className="form-group col-sm-4">
                           <label>Beds</label>
                           <select
+                            type="number"
                             className="form-control"
                             name="beds"
                             onChange={onChangeHandler}
                           >
-                            <option selected disabled>
+                            <option value={details.zero} selected disabled>
                               0
                             </option>
                             <option value={details.one}>1</option>
@@ -740,11 +736,12 @@ function AdminPanel() {
                         <div className="form-group col-sm-4">
                           <label>Baths</label>
                           <select
+                            type="number"
                             className="form-control"
                             name="baths"
                             onChange={onChangeHandler}
                           >
-                            <option selected disabled>
+                            <option value={details.zero} selected disabled>
                               0
                             </option>
                             <option value={details.one}>1</option>
@@ -758,11 +755,12 @@ function AdminPanel() {
                         <div className="form-group col-sm-4">
                           <label>Garage</label>
                           <select
+                            type="number"
                             className="form-control"
                             name="garage"
                             onChange={onChangeHandler}
                           >
-                            <option selected disabled>
+                            <option value={details.zero} selected disabled>
                               0
                             </option>
                             <option value={details.one}>1</option>
@@ -776,11 +774,12 @@ function AdminPanel() {
                         <div className="form-group col-sm-4">
                           <label>Balcony</label>
                           <select
+                            type="number"
                             className="form-control"
                             name="balcony"
                             onChange={onChangeHandler}
                           >
-                            <option selected disabled>
+                            <option value={details.one} selected>
                               0
                             </option>
                             <option value={details.one}>1</option>
@@ -1059,7 +1058,7 @@ function AdminPanel() {
                                 value="Free parking"
                                 onChange={onChangeHandler}
                               />{" "}
-                              Free Parking In The Area
+                              Free Parking
                             </label>
                             <label for="chk-ani4">
                               <input

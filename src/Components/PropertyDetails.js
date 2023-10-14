@@ -27,16 +27,8 @@ function PropertyDetails() {
     getDoc(docRef).then((doc) => {
       setPropertyDetails({ ...doc.data() });
     });
-    // const docSnap = await getDoc(docRef);
-
-    // if (docSnap) {
-    //     setPropertyDetails(docSnap.data())
-    //     console.log("Document data:", docSnap.data());
-    // } else {
-    //     // docSnap.data() will be undefined in this case
-    //     console.log("No such document!");
-    // }
   }, [id]);
+
   return (
     <div>
       {/* <!-- breadcrumb start --> */}
@@ -930,7 +922,7 @@ function PropertyDetails() {
                               {propertyDetails.propertyType}
                             </li>
                             <li>
-                              <span>Property ID :</span> ZOEA245
+                              <span>Property ID :</span> {propertyDetails.id}
                             </li>
                             <li>
                               <span>Property status :</span>

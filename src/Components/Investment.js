@@ -27,14 +27,12 @@ import {
   getDoc,
   doc,
   setDoc,
+  where,
 } from "firebase/firestore";
-import { storage } from "../FirebaseAuth/firebase";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../FirebaseAuth/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { useAuthState } from "react-firebase-hooks/auth";
 import Select from "react-select";
 import "../styles/Investment.css";
 
@@ -51,8 +49,33 @@ function Investment() {
   const [customerOptions, setCustomerOptions] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
-  const [userUid, setUserUid] = useState("");
   const [successAlert, setSuccessAlert] = useState(false);
+  const [admin, setAdmin] = useState([]);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        navigate("/investment");
+        try {
+          const userDocsRef = collection(db, "adminUser");
+          const userDocsQuery = query(
+            userDocsRef,
+            where("isAdmin", "==", "true")
+          );
+          let list = [];
+          const userDocsSnapshot = await getDocs(userDocsQuery);
+          userDocsSnapshot.forEach((doc) => {
+            list.push({ ...doc.data() });
+          });
+          setAdmin(list);
+        } catch (error) {
+          console.error("Error fetching user documents:", error);
+        }
+      } else {
+        navigate("/login");
+      }
+    });
+  }, []);
 
   const logOut = () => {
     signOut(auth)
@@ -154,7 +177,6 @@ function Investment() {
 
       setSuccessAlert(true);
       setTimeout(() => setSuccessAlert(false), 3000);
-      // navigate("/property-list");
     } catch (error) {
       console.error("Error adding document:", error);
     }
@@ -243,18 +265,22 @@ function Investment() {
               <div className="user-profile">
                 <div className="media">
                   <div className="change-pic">
-                    <img
+                    {/* <img
                       src="https://firebasestorage.googleapis.com/v0/b/crowdpe-6ba17.appspot.com/o/webassets%2Ftestimonial%2F3.png?alt=media&token=a43e2409-29f3-481a-a1cd-0923f60b69de"
                       className="img-fluid"
                       alt=""
-                    />
+                    /> */}
                   </div>
-                  <div className="media-body">
-                    <a>
-                      <h6>Zack Lee</h6>
-                    </a>
-                    <span className="font-roboto">zackle@gmail.com</span>
-                  </div>
+                  {admin.map((doc) => {
+                    return (
+                      <div className="media-body">
+                        <a>
+                          <h6>{doc.name}</h6>
+                        </a>
+                        <span className="font-roboto">{doc.email}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
               <div id="mainsidebar">
