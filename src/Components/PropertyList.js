@@ -563,9 +563,10 @@ function PropertyList() {
                                     <div className="property-image">
                                       <div className="property-slider">
                                         <div
-                                          id="carouselExampleIndicators"
+                                          id={`carouselExampleIndicators-${list.id}`}
                                           className="carousel slide"
                                           data-ride="carousel"
+                                          data-interval="false"
                                         >
                                           {/* <ol className="carousel-indicators">
                                                                                         <li data-target="#carouselExampleIndicators" data-slide-to="0" className="active"></li>
@@ -646,7 +647,7 @@ function PropertyList() {
                                           </div>
                                           <a
                                             className="carousel-control-prev"
-                                            href="#carouselExampleIndicators"
+                                            href={`#carouselExampleIndicators-${list.id}`}
                                             role="button"
                                             data-slide="prev"
                                           >
@@ -660,7 +661,7 @@ function PropertyList() {
                                           </a>
                                           <a
                                             className="carousel-control-next"
-                                            href="#carouselExampleIndicators"
+                                            href={`#carouselExampleIndicators-${list.id}`}
                                             role="button"
                                             data-slide="next"
                                           >
@@ -834,8 +835,7 @@ function PropertyList() {
                 </div>
                 <div className="col-md-6">
                   <p className="float-end mb-0">
-                    Developed with <i className="fa fa-heart font-danger"></i>{" "}
-                    by Shivani
+                    Developed with <i className="fa fa-heart font-danger"></i>
                   </p>
                 </div>
               </div>
