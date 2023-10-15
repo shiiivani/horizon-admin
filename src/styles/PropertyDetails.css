@@ -46,3 +46,8 @@
     }
   }
 
+  .single-property-section .container {
+    position: relative;
+    left: 0;
+  }
+

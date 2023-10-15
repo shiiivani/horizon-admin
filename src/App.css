@@ -1,0 +1,10 @@
+.breadcrumb-section .container {
+    position:absolute;
+    top: 10px;
+    left:7%;
+}
+
+.breadcrumb-content h2 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+}

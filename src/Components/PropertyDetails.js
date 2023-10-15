@@ -231,7 +231,13 @@ function PropertyDetails() {
                         className="img-fluid"
                         alt=""
                       />
-                      <span> {propertyDetails.halls} Halls</span>
+                      <span>
+                        {" "}
+                        {isNaN(propertyDetails.garage)
+                          ? 0
+                          : propertyDetails.garage}{" "}
+                        Halls
+                      </span>
                     </div>
                   </li>
                   <li>
@@ -251,7 +257,12 @@ function PropertyDetails() {
                         className="img-fluid"
                         alt=""
                       />
-                      <span>{propertyDetails.garage} Garage</span>
+                      <span>
+                        {isNaN(propertyDetails.garage)
+                          ? 0
+                          : propertyDetails.garage}{" "}
+                        Garage
+                      </span>
                     </div>
                   </li>
                 </ul>
@@ -945,7 +956,9 @@ function PropertyDetails() {
                             </li>
                             <li>
                               <span>Balcony :</span>
-                              {propertyDetails.balcony}
+                              {isNaN(propertyDetails.garage)
+                                ? 0
+                                : propertyDetails.garage}
                             </li>
                           </ul>
                         </div>

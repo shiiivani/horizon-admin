@@ -1,10 +1,10 @@
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth, db } from "../FirebaseAuth/firebase";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Lock } from "react-feather";
-import { onAuthStateChanged } from "firebase/auth";
-import { collection, getDoc, doc } from "firebase/firestore";
+import { getDoc, doc } from "firebase/firestore";
+import "../App.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -24,7 +24,7 @@ const Login = () => {
             console.log(doc);
             if (doc.exists) {
               if (doc.data().isAdmin === "true") {
-                navigate("/admin-panel");
+                window.location.href = "/admin-panel";
                 console.log("signed in");
               } else {
                 logOut();
