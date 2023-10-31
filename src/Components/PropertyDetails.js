@@ -980,7 +980,11 @@ function PropertyDetails() {
                         </div>
                       </div>
                       <h4 className="content-title mt-4">Attachments</h4>
-                      <a href="javascript:void(0)" className="attach-file">
+                      <a
+                        href={propertyDetails.propertyDocument?.[0]}
+                        target="_blank"
+                        className="attach-file"
+                      >
                         <i className="far fa-file-pdf"></i>Demo Property
                         Document{" "}
                       </a>

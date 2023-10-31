@@ -23,6 +23,7 @@ import { onAuthStateChanged } from "firebase/auth";
 function EditProperty() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [successAlert, setSuccessAlert] = useState(false);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -57,6 +58,7 @@ function EditProperty() {
   });
   const [propertyImage, setPropertyImage] = useState("");
   const [floorPlanImage, setFloorPlanImage] = useState("");
+  const [propertyDocument, setPropertyDocument] = useState("");
 
   const onChangeHandler = (event) => {
     if (event.target.name === "additionalFeatures") {
@@ -121,10 +123,26 @@ function EditProperty() {
     return floorurlarray;
   };
 
+  const docUrl = [];
+
+  const uploadPropertyDocument = async () => {
+    for (let i = 0; i < propertyDocument.length; i++) {
+      const docRef = ref(
+        storage,
+        `/propertyDocuments/${propertyDocument.name}`
+      );
+      const result = await uploadBytes(docRef, propertyDocument[i]);
+      const url = await getDownloadURL(docRef);
+      docUrl.push(url);
+    }
+    return docUrl;
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
     await uploadProperty();
     await uploadFloorPlan();
+    await uploadPropertyDocument();
     try {
       const docref = doc(db, "propertyDetails", id);
       await updateDoc(docref, {
@@ -148,12 +166,15 @@ function EditProperty() {
         minimumHoldPeriod: Number(details.minimumHoldPeriod),
         pincode: details.pincode,
         price: Number(details.price),
+        propertyDocument: docUrl,
         propertyName: details.propertyName,
         propertyPrice: Number(details.propertyPrice),
         propertyStatus: details.propertyStatus,
         propertyType: details.propertyType,
         urlarray,
       });
+      setSuccessAlert(true);
+      setTimeout(() => setSuccessAlert(false), 3000);
       console.log("Document written with ID: ", docref.id);
       //   setErr("Details sent Successfully");
     } catch (e) {
@@ -187,7 +208,14 @@ function EditProperty() {
           <div className="nav-right col p-0">
             <ul className="header-menu">
               <li>
-                <div className="d-md-none mobile-search">
+                {successAlert ? (
+                  <div className="alert alert-success" role="alert">
+                    Details Successfully Updated!
+                  </div>
+                ) : (
+                  ""
+                )}
+                {/* <div className="d-md-none mobile-search">
                   <Search />
                 </div>
                 <div className="form-group search-form">
@@ -196,7 +224,7 @@ function EditProperty() {
                     className="form-control"
                     placeholder="Search here..."
                   />
-                </div>
+                </div> */}
               </li>
               <li className="profile-avatar onhover-dropdown">
                 <div>
@@ -1214,6 +1242,32 @@ function EditProperty() {
                           <input
                             type="file"
                             multiple
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              position: "absolute",
+                              zIndex: "0",
+                              cursor: "pointer",
+                              opacity: "0",
+                            }}
+                          />
+                          <div className="dz-message needsclick">
+                            <i className="fas fa-cloud-upload-alt"></i>
+                            <h6>Click to choose file</h6>
+                          </div>
+                        </form>
+                      </div>
+                      <div className="dropzone-admin">
+                        <label>Property Document</label>
+                        <form
+                          className="dropzone"
+                          style={{ position: "relative" }}
+                          onChange={(event) => {
+                            setPropertyDocument(event.target.files);
+                          }}
+                        >
+                          <input
+                            type="file"
                             style={{
                               width: "100%",
                               height: "100%",

@@ -64,6 +64,7 @@ function AdminPanel() {
   const [floorPlanImage, setFloorPlanImage] = useState("");
   const navigate = useNavigate();
   const [admin, setAdmin] = useState([]);
+  const [propertyDocument, setPropertyDocument] = useState("");
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
@@ -142,11 +143,27 @@ function AdminPanel() {
     return floorurlarray;
   };
 
+  const docUrl = [];
+
+  const uploadPropertyDocument = async () => {
+    for (let i = 0; i < propertyDocument.length; i++) {
+      const docRef = ref(
+        storage,
+        `/propertyDocuments/${propertyDocument.name}`
+      );
+      const result = await uploadBytes(docRef, propertyDocument[i]);
+      const url = await getDownloadURL(docRef);
+      docUrl.push(url);
+    }
+    return docUrl;
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
       await uploadProperty();
       await uploadFloorPlan();
+      await uploadPropertyDocument();
       const docRef = doc(db, "totalNumberOfProperties", "tEIwoh99Xv26RmXG3D05");
       const docSnapshot = await getDoc(docRef);
       const currentCount = docSnapshot.exists()
@@ -175,6 +192,7 @@ function AdminPanel() {
         minimumHoldPeriod: Number(details.minimumHoldPeriod),
         pincode: details.pincode,
         price: Number(details.price),
+        propertyDocument: docUrl,
         propertyName: details.propertyName,
         propertyPrice: Number(details.propertyPrice),
         propertyStatus: details.propertyStatus,
@@ -993,6 +1011,32 @@ function AdminPanel() {
                           <input
                             type="file"
                             multiple
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              position: "absolute",
+                              zIndex: "0",
+                              cursor: "pointer",
+                              opacity: "0",
+                            }}
+                          />
+                          <div className="dz-message needsclick">
+                            <i className="fas fa-cloud-upload-alt"></i>
+                            <h6>Click to choose file</h6>
+                          </div>
+                        </form>
+                      </div>
+                      <div className="dropzone-admin">
+                        <label>Property Document</label>
+                        <form
+                          className="dropzone"
+                          style={{ position: "relative" }}
+                          onChange={(event) => {
+                            setPropertyDocument(event.target.files);
+                          }}
+                        >
+                          <input
+                            type="file"
                             style={{
                               width: "100%",
                               height: "100%",
