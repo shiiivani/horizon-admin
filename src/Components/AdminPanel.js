@@ -1,16 +1,11 @@
 import { useState, useEffect } from "react";
 import {
-  Airplay,
   BarChart,
-  Bell,
   ChevronsLeft,
   ChevronsRight,
   Grid,
   Layout,
-  Mail,
-  Save,
   Search,
-  Settings,
 } from "react-feather";
 import logoDark from "../assets/logo-dark.png";
 import logoLight from "../assets/logo-light.png";
@@ -838,7 +833,7 @@ function AdminPanel() {
                             name="minimumHoldPeriod"
                             value={details.minimumHoldPeriod}
                             onChange={onChangeHandler}
-                            placeholder="₹3000"
+                            placeholder="3years"
                           />
                         </div>
                         {/* <div className="form-group col-sm-4">

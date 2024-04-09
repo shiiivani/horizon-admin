@@ -1184,7 +1184,7 @@ function EditProperty() {
                             <option disabled>City</option>
                             <option value={details.bangalore}>Bangalore</option>
                             <option value={details.newDelhi}>New Delhi</option>
-                            <option value={details.lucknow}>Luknow</option>
+                            <option value={details.lucknow}>Lucknow</option>
                             <option value={details.mumbai}>Mumbai</option>
                           </select>
                         </div>

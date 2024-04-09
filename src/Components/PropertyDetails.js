@@ -385,11 +385,11 @@ function PropertyDetails() {
                               gallery
                             </a>
                           </li>
-                          <li>
+                          {/* <li>
                             <a className="" href="#video">
                               video
                             </a>
-                          </li>
+                          </li> */}
                           <li>
                             <a className="" href="#details">
                               details
@@ -683,48 +683,61 @@ function PropertyDetails() {
                                   data-gallery="example-gallery"
                                 />
                               </div>
-                              <div
-                                className="carousel-item"
-                                data-slide-number="2"
-                              >
-                                <img
-                                  src={propertyDetails.urlarray?.[2]}
-                                  className="d-block w-100"
-                                  alt="..."
-                                  data-remote={propertyDetails.urlarray?.[2]}
-                                  data-type="image"
-                                  data-toggle="lightbox"
-                                  data-gallery="example-gallery"
-                                />
-                              </div>
-                              <div
-                                className="carousel-item"
-                                data-slide-number="3"
-                              >
-                                <img
-                                  src={propertyDetails.urlarray?.[3]}
-                                  className="d-block w-100"
-                                  alt="..."
-                                  data-remote={propertyDetails.urlarray?.[3]}
-                                  data-type="image"
-                                  data-toggle="lightbox"
-                                  data-gallery="example-gallery"
-                                />
-                              </div>
-                              <div
-                                className="carousel-item"
-                                data-slide-number="4"
-                              >
-                                <img
-                                  src={propertyDetails.urlarray?.[4]}
-                                  className="d-block w-100"
-                                  alt="..."
-                                  data-remote={propertyDetails.urlarray?.[4]}
-                                  data-type="image"
-                                  data-toggle="lightbox"
-                                  data-gallery="example-gallery"
-                                />
-                              </div>
+                              {propertyDetails.urlarray?.[2] ? (
+                                <div
+                                  className="carousel-item"
+                                  data-slide-number="2"
+                                >
+                                  <img
+                                    src={propertyDetails.urlarray?.[2]}
+                                    className="d-block w-100"
+                                    alt="..."
+                                    data-remote={propertyDetails.urlarray?.[2]}
+                                    data-type="image"
+                                    data-toggle="lightbox"
+                                    data-gallery="example-gallery"
+                                  />
+                                </div>
+                              ) : (
+                                ""
+                              )}
+
+                              {propertyDetails.urlarray?.[3] ? (
+                                <div
+                                  className="carousel-item"
+                                  data-slide-number="3"
+                                >
+                                  <img
+                                    src={propertyDetails.urlarray?.[3]}
+                                    className="d-block w-100"
+                                    alt="..."
+                                    data-remote={propertyDetails.urlarray?.[3]}
+                                    data-type="image"
+                                    data-toggle="lightbox"
+                                    data-gallery="example-gallery"
+                                  />
+                                </div>
+                              ) : (
+                                ""
+                              )}
+                              {propertyDetails.urlarray?.[4] ? (
+                                <div
+                                  className="carousel-item"
+                                  data-slide-number="4"
+                                >
+                                  <img
+                                    src={propertyDetails.urlarray?.[4]}
+                                    className="d-block w-100"
+                                    alt="..."
+                                    data-remote={propertyDetails.urlarray?.[4]}
+                                    data-type="image"
+                                    data-toggle="lightbox"
+                                    data-gallery="example-gallery"
+                                  />
+                                </div>
+                              ) : (
+                                ""
+                              )}
                               <div
                                 className="carousel-item"
                                 data-slide-number="5"
@@ -842,7 +855,7 @@ function PropertyDetails() {
                                   )}
                                 </div>
                               </div>
-                              <div className="carousel-item">
+                              {/* <div className="carousel-item">
                                 <div className="row mx-0">
                                   <div
                                     id="carousel-selector-6"
@@ -856,46 +869,59 @@ function PropertyDetails() {
                                       alt="..."
                                     />
                                   </div>
-                                  <div
-                                    id="carousel-selector-7"
-                                    className="thumb col-4 col-sm-2 px-1 py-2"
-                                    data-target="#myCarousel"
-                                    data-slide-to="7"
-                                  >
-                                    <img
-                                      src={propertyDetails.urlarray?.[1]}
-                                      className="img-fluid"
-                                      alt="..."
-                                    />
-                                  </div>
-                                  <div
-                                    id="carousel-selector-8"
-                                    className="thumb col-4 col-sm-2 px-1 py-2"
-                                    data-target="#myCarousel"
-                                    data-slide-to="8"
-                                  >
-                                    <img
-                                      src={propertyDetails.urlarray?.[2]}
-                                      className="img-fluid"
-                                      alt="..."
-                                    />
-                                  </div>
-                                  <div
-                                    id="carousel-selector-9"
-                                    className="thumb col-4 col-sm-2 px-1 py-2"
-                                    data-target="#myCarousel"
-                                    data-slide-to="9"
-                                  >
-                                    <img
-                                      src={propertyDetails.urlarray?.[3]}
-                                      className="img-fluid"
-                                      alt="..."
-                                    />
-                                  </div>
+                                  {propertyDetails.urlarray?.[1] ? (
+                                    <div
+                                      id="carousel-selector-7"
+                                      className="thumb col-4 col-sm-2 px-1 py-2"
+                                      data-target="#myCarousel"
+                                      data-slide-to="7"
+                                    >
+                                      <img
+                                        src={propertyDetails.urlarray?.[1]}
+                                        className="img-fluid"
+                                        alt="..."
+                                      />
+                                    </div>
+                                  ) : (
+                                    ""
+                                  )}
+
+                                  {propertyDetails.urlarray?.[2] ? (
+                                    <div
+                                      id="carousel-selector-7"
+                                      className="thumb col-4 col-sm-2 px-1 py-2"
+                                      data-target="#myCarousel"
+                                      data-slide-to="7"
+                                    >
+                                      <img
+                                        src={propertyDetails.urlarray?.[2]}
+                                        className="img-fluid"
+                                        alt="..."
+                                      />
+                                    </div>
+                                  ) : (
+                                    ""
+                                  )}
+                                  {propertyDetails.urlarray?.[3] ? (
+                                    <div
+                                      id="carousel-selector-7"
+                                      className="thumb col-4 col-sm-2 px-1 py-2"
+                                      data-target="#myCarousel"
+                                      data-slide-to="7"
+                                    >
+                                      <img
+                                        src={propertyDetails.urlarray?.[3]}
+                                        className="img-fluid"
+                                        alt="..."
+                                      />
+                                    </div>
+                                  ) : (
+                                    ""
+                                  )}
                                   <div className="col-2 px-1 py-2"></div>
                                   <div className="col-2 px-1 py-2"></div>
                                 </div>
-                              </div>
+                              </div> */}
                             </div>
                             {/* <a className="carousel-control-prev" href="#carousel-thumbs" role="button" data-slide="prev">
                                                     <span className="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -1213,7 +1239,7 @@ function PropertyDetails() {
                       </form>
                     </div>
                   </div>
-                  <div className="advance-card">
+                  {/* <div className="advance-card">
                     <h6>filter</h6>
                     <div className="row gx-2">
                       <div className="col-12">
@@ -1444,7 +1470,7 @@ function PropertyDetails() {
                         </a>
                       </div>
                     </div>
-                  </div>{" "}
+                  </div>{" "} */}
                   {/* <div className="advance-card feature-card">
                                         <h6>Featured</h6>
                                         <div className="feature-slider">
@@ -1550,7 +1576,7 @@ function PropertyDetails() {
                                             </ul>
                                         </div>
                                     </div> */}
-                  <div className="advance-card">
+                  {/* <div className="advance-card">
                     <h6>Mortgage</h6>
                     <div className="category-property">
                       <form>
@@ -1598,7 +1624,7 @@ function PropertyDetails() {
                         </button>
                       </form>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
