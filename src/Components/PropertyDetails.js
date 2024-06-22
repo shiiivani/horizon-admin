@@ -1011,8 +1011,7 @@ function PropertyDetails() {
                         target="_blank"
                         className="attach-file"
                       >
-                        <i className="far fa-file-pdf"></i>Demo Property
-                        Document{" "}
+                        <i className="far fa-file-pdf"></i>Property Document{" "}
                       </a>
                     </div>
                   </div>
