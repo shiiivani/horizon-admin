@@ -1593,12 +1593,13 @@ function EditProperty() {
               <div className="row">
                 <div className="col-md-6 footer-copyright">
                   <p className="mb-0">
-                    Copyright 2022 © Crowdpe All rights reserved.
+                    Copyright 2022 © Horizon All rights reserved.
                   </p>
                 </div>
                 <div className="col-md-6">
                   <p className="float-end mb-0">
-                    Developed with <i className="fa fa-heart font-danger"></i>
+                    Developed with <i className="fa fa-heart font-danger"></i>{" "}
+                    by Shivani
                   </p>
                 </div>
               </div>
