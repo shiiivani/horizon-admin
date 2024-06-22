@@ -944,7 +944,7 @@ function PropertyDetails() {
                       <h4 className="content-title">
                         Property Details
                         <a
-                          href="https://www.google.com/maps/place/New+York,+NY,+Bangalore/@40.697488,-73.979681,8z/data=!4m5!3m4!1s0x89c24fa5d33f083b:0xc80b8f06e177fe62!8m2!3d40.7127753!4d-74.0059728?hl=en"
+                          href="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15544.92161730534!2d77.61676435698154!3d12.935772483081344!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670ea295a63%3A0x36c29b1d034b0a4d!2sKoramangala%2C%20Bengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1563449626439!5m2!1sen!2sin"
                           target="_blank"
                           rel="noreferrer"
                         >
